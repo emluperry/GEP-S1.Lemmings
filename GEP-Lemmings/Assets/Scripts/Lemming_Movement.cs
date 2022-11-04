@@ -21,7 +21,7 @@ public class Lemming_Movement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (m_RB.velocity.y < 0)
+        if (m_RB.velocity.y < -Mathf.Epsilon)
         {
             m_isFalling = true;
             if(!m_hasFallReducedHorizontalVelocity)
