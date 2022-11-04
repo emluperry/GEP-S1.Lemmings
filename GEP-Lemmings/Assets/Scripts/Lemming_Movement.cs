@@ -45,6 +45,7 @@ public class Lemming_Movement : MonoBehaviour
         if (!m_isFalling)
         {
             m_direction *= -1;
+            m_RB.velocity = Vector3.zero;
         }
         else
         {
