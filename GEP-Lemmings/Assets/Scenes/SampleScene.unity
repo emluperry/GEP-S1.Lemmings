@@ -815,6 +815,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lemming
       objectReference: {fileID: 0}
+    - target: {fileID: 5937101317782046470, guid: c873b23a54a3956469f59d7952ff9a5f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5937101317782046492, guid: c873b23a54a3956469f59d7952ff9a5f,
         type: 3}
       propertyPath: m_SpeedDecreaseModifier

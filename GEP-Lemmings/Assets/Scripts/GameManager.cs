@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,17 +13,25 @@ public class GameManager : MonoBehaviour
     [SerializeField][Min(0.01f)] private float m_LemmingSpawnDelay = 0.5f;
     private float m_CurrentInterval = 0;
     [SerializeField] private GameObject m_LevelSpawnPoint;
-    [SerializeField] private GameObject m_LevelEndPoint;
+    [SerializeField] private Exit_Object m_LevelEndPoint;
 
     private void Start()
     {
+        m_LevelEndPoint.onLemmingExit += DeactivateLemming;
+
         m_ArrLemmings = new GameObject[m_MaxLemmings];
         for(int index = 0; index < m_MaxLemmings; index++)
         {
             m_ArrLemmings[index] = Instantiate(m_LemmingObject, m_LevelSpawnPoint.transform.position, Quaternion.identity, gameObject.transform);
             m_ArrLemmings[index].SetActive(false);
+            m_ArrLemmings[index].GetComponent<Lemming_Movement>().LemmingID = index;
         }
         m_CurrentInterval = m_LemmingSpawnDelay;
+    }
+
+    private void OnDestroy()
+    {
+        m_LevelEndPoint.onLemmingExit -= DeactivateLemming;
     }
 
     private void Update()
@@ -34,5 +43,12 @@ public class GameManager : MonoBehaviour
             m_LastActiveLemming++;
             m_CurrentInterval = 0;
         }
+    }
+
+    private void DeactivateLemming(int LemmingIndex)
+    {
+        Debug.Log("Triggered Deactivation");
+        m_ArrLemmings[LemmingIndex].SetActive(false);
+        //increase number of successful lemmings
     }
 }

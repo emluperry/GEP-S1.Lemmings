@@ -21,6 +21,7 @@ public class Lemming_Movement : MonoBehaviour
     [SerializeField][Min(0f)] private float m_SpeedDecreaseModifier = 0.1f;
     [SerializeField][Min(0f)] private float m_MinimumSpeed = 0.0000000001f;
 
+    public int LemmingID = -1;
     private Vector3 m_direction = new Vector3(1, 0, 0);
     private LEMMING_STATE m_state;
     private bool m_hasFallReducedHorizontalVelocity = false;
