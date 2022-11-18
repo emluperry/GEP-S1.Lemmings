@@ -6,7 +6,7 @@ public class Camera_Controller : MonoBehaviour
 {
     private Vector3 m_Direction = new Vector3(0,0,0);
 
-    private float m_CameraSpeed = 5f;
+    [SerializeField] private float m_CameraSpeed = 5f;
 
     // Update is called once per frame
     void Update()

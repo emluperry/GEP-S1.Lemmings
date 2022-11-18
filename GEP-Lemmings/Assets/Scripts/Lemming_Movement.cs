@@ -2,6 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+enum LEMMING_STATE
+{
+    WALKING,
+    FALLING,
+    TURNING,
+    FLOATING,
+    BUILDING,
+    BLOCKING
+}
+
 public class Lemming_Movement : MonoBehaviour
 {
     private Rigidbody m_RB;
@@ -9,9 +19,11 @@ public class Lemming_Movement : MonoBehaviour
     [Header("Lemming Properties")]
     [SerializeField][Min(0f)] private float m_Speed = 5;
     [SerializeField][Min(0f)] private float m_SpeedDecreaseModifier = 0.1f;
+    [SerializeField][Min(0f)] private float m_MinimumSpeed = 0.0000000001f;
 
+    public int LemmingID = -1;
     private Vector3 m_direction = new Vector3(1, 0, 0);
-    private bool m_isFalling = false;
+    private LEMMING_STATE m_state;
     private bool m_hasFallReducedHorizontalVelocity = false;
 
     private void Start()
@@ -21,36 +33,56 @@ public class Lemming_Movement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (m_RB.velocity.y < -Mathf.Epsilon)
+        switch (m_state)
         {
-            m_isFalling = true;
-            if(!m_hasFallReducedHorizontalVelocity)
-            {
-                float newSpeed = m_RB.velocity.x * m_SpeedDecreaseModifier;
-                m_RB.velocity = new Vector3(newSpeed, m_RB.velocity.y, 0);
-                m_hasFallReducedHorizontalVelocity = true;
-            }
-        }
+            case LEMMING_STATE.WALKING:
+                Walking();
+                if (m_RB.velocity.y < -m_MinimumSpeed)
+                    m_state = LEMMING_STATE.FALLING;
+                break;
 
-        if (!m_isFalling)
+            case LEMMING_STATE.FALLING:
+                Falling();
+                if (m_RB.velocity.y > -m_MinimumSpeed)
+                {
+                    m_RB.velocity = new Vector2(0, 0);
+                    m_hasFallReducedHorizontalVelocity = false;
+                    m_state = LEMMING_STATE.WALKING;
+                }
+                break;
+            case LEMMING_STATE.TURNING:
+                TurnAround();
+                m_state = LEMMING_STATE.WALKING;
+                break;
+        }
+    }
+
+    private void Walking()
+    {
+        Vector2 NeededAcceleration = (m_Speed * m_direction - new Vector3(m_RB.velocity.x, 0, 0)) / Time.fixedDeltaTime;
+
+        m_RB.AddForce(NeededAcceleration, ForceMode.Force);
+    }
+
+    private void Falling()
+    {
+        if (!m_hasFallReducedHorizontalVelocity)
         {
-            Vector2 NeededAcceleration = (m_Speed * m_direction - new Vector3(m_RB.velocity.x, 0, 0)) / Time.fixedDeltaTime;
-
-            m_RB.AddForce(NeededAcceleration, ForceMode.Force);
+            float newSpeed = m_RB.velocity.x * m_SpeedDecreaseModifier;
+            m_RB.velocity = new Vector3(newSpeed, m_RB.velocity.y, 0);
+            m_hasFallReducedHorizontalVelocity = true;
         }
+    }
+
+    private void TurnAround()
+    {
+        m_direction *= -1;
+        m_RB.velocity = new Vector2(m_RB.velocity.x * -1, 0);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!m_isFalling)
-        {
-            m_direction *= -1;
-            m_RB.velocity = Vector3.zero;
-        }
-        else
-        {
-            m_isFalling = false;
-            m_hasFallReducedHorizontalVelocity = false;
-        }
+        if (m_state != LEMMING_STATE.FALLING)
+            m_state = LEMMING_STATE.TURNING;
     }
 }
