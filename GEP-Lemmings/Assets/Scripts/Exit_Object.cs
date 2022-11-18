@@ -9,7 +9,6 @@ public class Exit_Object : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Broadcasting event.");
         onLemmingExit?.Invoke(other.GetComponent<Lemming_Movement>().LemmingID);
     }
 }
