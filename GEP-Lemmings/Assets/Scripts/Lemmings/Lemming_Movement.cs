@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,6 +27,11 @@ public class Lemming_Movement : MonoBehaviour
     private LEMMING_STATE m_state;
     private bool m_hasFallReducedHorizontalVelocity = false;
 
+    //actions
+    public Action onWalking;
+    public Action onFalling;
+    public Action onFloating;
+
     private void Start()
     {
         m_RB = GetComponent<Rigidbody>();
@@ -38,7 +44,9 @@ public class Lemming_Movement : MonoBehaviour
             case LEMMING_STATE.WALKING:
                 Walking();
                 if (m_RB.velocity.y < -m_MinimumSpeed)
+                {
                     m_state = LEMMING_STATE.FALLING;
+                }
                 break;
 
             case LEMMING_STATE.FALLING:
@@ -48,6 +56,7 @@ public class Lemming_Movement : MonoBehaviour
                     m_RB.velocity = new Vector2(0, 0);
                     m_hasFallReducedHorizontalVelocity = false;
                     m_state = LEMMING_STATE.WALKING;
+                    onWalking?.Invoke();
                 }
                 break;
             case LEMMING_STATE.TURNING:
@@ -71,6 +80,7 @@ public class Lemming_Movement : MonoBehaviour
             float newSpeed = m_RB.velocity.x * m_SpeedDecreaseModifier;
             m_RB.velocity = new Vector3(newSpeed, m_RB.velocity.y, 0);
             m_hasFallReducedHorizontalVelocity = true;
+            onFalling?.Invoke();
         }
     }
 

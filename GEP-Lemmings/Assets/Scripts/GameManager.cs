@@ -47,7 +47,6 @@ public class GameManager : MonoBehaviour
 
     private void DeactivateLemming(int LemmingIndex)
     {
-        Debug.Log("Triggered Deactivation");
         m_ArrLemmings[LemmingIndex].SetActive(false);
         //increase number of successful lemmings
     }
