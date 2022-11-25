@@ -38,6 +38,20 @@ public class Lemming_Movement : MonoBehaviour
         m_RB = GetComponent<Rigidbody>();
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject)
+        {
+            if (m_state != LEMMING_STATE.FALLING)
+                m_state = LEMMING_STATE.TURNING;
+        }
+    }
+
+    public void SetJobState(int index)
+    {
+        m_state = (LEMMING_STATE)(index + 3);
+    }
+
     void FixedUpdate()
     {
         switch (m_state)
@@ -89,11 +103,5 @@ public class Lemming_Movement : MonoBehaviour
     {
         m_direction *= -1;
         m_RB.velocity = new Vector2(m_RB.velocity.x * -1, 0);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (m_state != LEMMING_STATE.FALLING)
-            m_state = LEMMING_STATE.TURNING;
     }
 }

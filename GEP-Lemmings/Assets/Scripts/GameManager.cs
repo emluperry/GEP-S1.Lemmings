@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
 
     private void SetLemmingJob(int LemmingIndex)
     {
-        //m_ArrLemmings[LemmingIndex].state(currentJob)
+        m_ArrLemmings[LemmingIndex].GetComponent<Lemming_Movement>().SetJobState(currentJob);
     }
 
     private void UpdateJobIndex(int index)
