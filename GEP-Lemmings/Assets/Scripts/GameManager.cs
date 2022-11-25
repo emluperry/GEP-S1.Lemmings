@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Exit_Object m_LevelEndPoint;
 
     [Header("Mouse References")]
-    private Pointer_Handler m_PointerHandler;
     private LEMMING_JOB m_CurrentJob = LEMMING_JOB.NONE;
 
     [Header("UI References")]
@@ -30,12 +29,9 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        //components
-        m_PointerHandler = GetComponent<Pointer_Handler>();
 
         //events
         m_LevelEndPoint.onLemmingExit += DeactivateLemming;
-        //m_PointerHandler.onClickedLemming += SetLemmingJob;
         m_UIHandler.onRoleChosen += UpdateJobCast;
 
         //lemmings
