@@ -24,7 +24,6 @@ public class Lemming_Animation : MonoBehaviour
 
     private void UpdateWalking()
     {
-        Debug.Log("Received event.");
         m_Animator.SetBool("isGrounded", true);
     }
 

@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Exit_Object m_LevelEndPoint;
 
     [Header("UI References")]
-    [SerializeField] private UIManager m_UIHandler;
+    [SerializeField] private HUD_ButtonManager m_UIHandler;
 
     private void Awake()
     {
