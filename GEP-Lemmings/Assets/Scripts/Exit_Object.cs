@@ -9,6 +9,8 @@ public class Exit_Object : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        onLemmingExit?.Invoke(other.GetComponent<Lemming_Movement>().LemmingID);
+        Lemming_Movement lemming = other.GetComponent<Lemming_Movement>();
+        if(lemming)
+            onLemmingExit?.Invoke(lemming.LemmingID);
     }
 }

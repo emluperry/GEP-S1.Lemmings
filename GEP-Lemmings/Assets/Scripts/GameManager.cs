@@ -19,13 +19,24 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject m_LevelSpawnPoint;
     [SerializeField] private Exit_Object m_LevelEndPoint;
 
+    [Header("Mouse References")]
+    private Pointer_Handler m_PointerHandler;
+    private int currentJob = -1;
+
     [Header("UI References")]
     [SerializeField] private HUD_ButtonManager m_UIHandler;
 
     private void Awake()
     {
-        m_LevelEndPoint.onLemmingExit += DeactivateLemming;
+        //components
+        m_PointerHandler = GetComponent<Pointer_Handler>();
 
+        //events
+        m_LevelEndPoint.onLemmingExit += DeactivateLemming;
+        m_PointerHandler.onClickedLemming += SetLemmingJob;
+        m_UIHandler.onRoleChosen += UpdateJobIndex;
+
+        //lemmings
         m_ArrLemmings = new GameObject[m_MaxLemmings];
         for (int index = 0; index < m_MaxLemmings; index++)
         {
@@ -56,5 +67,15 @@ public class GameManager : MonoBehaviour
     {
         m_ArrLemmings[LemmingIndex].SetActive(false);
         //increase number of successful lemmings
+    }
+
+    private void SetLemmingJob(int LemmingIndex)
+    {
+        //m_ArrLemmings[LemmingIndex].state(currentJob)
+    }
+
+    private void UpdateJobIndex(int index)
+    {
+        currentJob = index;
     }
 }

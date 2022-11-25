@@ -10,7 +10,8 @@ enum LEMMING_STATE
     TURNING,
     FLOATING,
     BUILDING,
-    BLOCKING
+    BLOCKING,
+    EXPLODING
 }
 
 public class Lemming_Movement : MonoBehaviour

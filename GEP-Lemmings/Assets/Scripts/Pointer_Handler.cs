@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Pointer_Handler : MonoBehaviour
 {
-    [SerializeField] private float mousePrecisionRadius = 1f;
+    [SerializeField] private float m_MousePrecisionRadius = 1f;
+
+    public event Action<int> onClickedLemming;
 
     private void Update()
     {
@@ -16,12 +19,12 @@ public class Pointer_Handler : MonoBehaviour
             mousePos.z = Camera.main.nearClipPlane;
             Ray ray = Camera.main.ScreenPointToRay(mousePos);
 
-            if (Physics.SphereCast(ray, mousePrecisionRadius, out hit))
+            if (Physics.SphereCast(ray, m_MousePrecisionRadius, out hit))
             {
                 Lemming_Movement lemming = hit.transform.gameObject.GetComponent<Lemming_Movement>();
                 if (lemming)
                 {
-                    Debug.Log(lemming.LemmingID);
+                    onClickedLemming?.Invoke(lemming.LemmingID);
                 }
             }
         }
