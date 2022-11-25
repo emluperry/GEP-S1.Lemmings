@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+using Lemmings.Enums;
+
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject m_LemmingObject;
@@ -21,7 +23,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Mouse References")]
     private Pointer_Handler m_PointerHandler;
-    private int currentJob = -1;
+    private LEMMING_JOB m_CurrentJob = LEMMING_JOB.NONE;
 
     [Header("UI References")]
     [SerializeField] private HUD_ButtonManager m_UIHandler;
@@ -34,7 +36,7 @@ public class GameManager : MonoBehaviour
         //events
         m_LevelEndPoint.onLemmingExit += DeactivateLemming;
         //m_PointerHandler.onClickedLemming += SetLemmingJob;
-        m_UIHandler.onRoleChosen += UpdateJobIndex;
+        m_UIHandler.onRoleChosen += UpdateJobCast;
 
         //lemmings
         m_ArrLemmings = new GameObject[m_MaxLemmings];
@@ -72,11 +74,11 @@ public class GameManager : MonoBehaviour
 
     private void SetLemmingJob(int LemmingIndex)
     {
-        m_ArrLemmings[LemmingIndex].GetComponent<Lemming_Movement>().SetJobState(currentJob);
+        m_ArrLemmings[LemmingIndex].GetComponent<Lemming_Movement>().SetJobState(m_CurrentJob);
     }
 
-    private void UpdateJobIndex(int index)
+    private void UpdateJobCast(LEMMING_JOB job)
     {
-        currentJob = index;
+        m_CurrentJob = job;
     }
 }

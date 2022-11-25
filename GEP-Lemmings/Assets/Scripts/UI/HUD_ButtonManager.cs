@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+using Lemmings.Enums;
+
 public class HUD_ButtonManager : MonoBehaviour
 {
     [SerializeField] private Button_OnClick FloatJob;
@@ -11,7 +13,7 @@ public class HUD_ButtonManager : MonoBehaviour
     [SerializeField] private Button_OnClick ExplodeJob;
     [SerializeField] private Button_OnClick NoneJob;
 
-    public event Action<int> onRoleChosen;
+    public event Action<LEMMING_JOB> onRoleChosen;
 
     private void Start()
     {
@@ -33,23 +35,23 @@ public class HUD_ButtonManager : MonoBehaviour
 
     private void SetFloatingJob()
     {
-        onRoleChosen?.Invoke(0);
+        onRoleChosen?.Invoke(LEMMING_JOB.FLOATING);
     }
     private void SetBlockingJob()
     {
-        onRoleChosen?.Invoke(1);
+        onRoleChosen?.Invoke(LEMMING_JOB.BLOCKING);
     }
     private void SetBuildJob()
     {
-        onRoleChosen?.Invoke(2);
+        onRoleChosen?.Invoke(LEMMING_JOB.BUILDING);
     }
     private void SetExplodeJob()
     {
-        onRoleChosen?.Invoke(3);
+        onRoleChosen?.Invoke(LEMMING_JOB.EXPLODING);
     }
 
     private void SetNone()
     {
-        onRoleChosen?.Invoke(-1);
+        onRoleChosen?.Invoke(LEMMING_JOB.NONE);
     }
 }

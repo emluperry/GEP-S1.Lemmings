@@ -3,16 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-enum LEMMING_STATE
-{
-    WALKING,
-    FALLING,
-    TURNING,
-    FLOATING,
-    BUILDING,
-    BLOCKING,
-    EXPLODING
-}
+using Lemmings.Enums;
 
 public class Lemming_Movement : MonoBehaviour
 {
@@ -26,6 +17,7 @@ public class Lemming_Movement : MonoBehaviour
     public int m_LemmingID = -1;
     private Vector3 m_direction = new Vector3(1, 0, 0);
     private LEMMING_STATE m_state;
+    private LEMMING_JOB m_job;
     private bool m_hasFallReducedHorizontalVelocity = false;
 
     private Button_OnClick m_LemmingButton;
@@ -70,12 +62,11 @@ public class Lemming_Movement : MonoBehaviour
         onLemmingClicked?.Invoke(m_LemmingID);
     }
 
-    public void SetJobState(int index)
+    public void SetJobState(LEMMING_JOB job)
     {
-        if (index == -1)
-            m_state = LEMMING_STATE.WALKING;
-        else
-            m_state = (LEMMING_STATE)(index + 3);
+        m_job = job;
+
+        Debug.Log("Current job: " + m_job);
     }
 
     void FixedUpdate()
