@@ -9,6 +9,7 @@ public class HUD_ButtonManager : MonoBehaviour
     [SerializeField] private Button_OnClick BlockingJob;
     [SerializeField] private Button_OnClick BuildJob;
     [SerializeField] private Button_OnClick ExplodeJob;
+    [SerializeField] private Button_OnClick NoneJob;
 
     public event Action<int> onRoleChosen;
 
@@ -18,6 +19,7 @@ public class HUD_ButtonManager : MonoBehaviour
         BlockingJob.OnClicked += SetBlockingJob;
         BuildJob.OnClicked += SetBuildJob;
         ExplodeJob.OnClicked += SetExplodeJob;
+        NoneJob.OnClicked += SetNone;
     }
 
     private void OnDestroy()
@@ -26,6 +28,7 @@ public class HUD_ButtonManager : MonoBehaviour
         BlockingJob.OnClicked -= SetFloatingJob;
         BuildJob.OnClicked -= SetBuildJob;
         ExplodeJob.OnClicked -= SetExplodeJob;
+        NoneJob.OnClicked -= SetNone;
     }
 
     private void SetFloatingJob()
@@ -43,5 +46,10 @@ public class HUD_ButtonManager : MonoBehaviour
     private void SetExplodeJob()
     {
         onRoleChosen?.Invoke(3);
+    }
+
+    private void SetNone()
+    {
+        onRoleChosen?.Invoke(-1);
     }
 }

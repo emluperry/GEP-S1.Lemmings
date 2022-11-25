@@ -23,15 +23,33 @@ public class Lemming_Movement : MonoBehaviour
     [SerializeField][Min(0f)] private float m_SpeedDecreaseModifier = 0.1f;
     [SerializeField][Min(0f)] private float m_MinimumSpeed = 0.0000000001f;
 
-    public int LemmingID = -1;
+    public int m_LemmingID = -1;
     private Vector3 m_direction = new Vector3(1, 0, 0);
     private LEMMING_STATE m_state;
     private bool m_hasFallReducedHorizontalVelocity = false;
+
+    private Button_OnClick m_LemmingButton;
+    public Action<int> onLemmingClicked;
 
     //actions
     public Action onWalking;
     public Action onFalling;
     public Action onFloating;
+
+    private void Awake()
+    {
+        m_LemmingButton = GetComponentInChildren<Button_OnClick>();
+    }
+
+    private void OnEnable()
+    {
+        m_LemmingButton.OnClicked += LemmingClicked;
+    }
+
+    private void OnDisable()
+    {
+        m_LemmingButton.OnClicked -= LemmingClicked;
+    }
 
     private void Start()
     {
@@ -47,9 +65,17 @@ public class Lemming_Movement : MonoBehaviour
         }
     }
 
+    private void LemmingClicked()
+    {
+        onLemmingClicked?.Invoke(m_LemmingID);
+    }
+
     public void SetJobState(int index)
     {
-        m_state = (LEMMING_STATE)(index + 3);
+        if (index == -1)
+            m_state = LEMMING_STATE.WALKING;
+        else
+            m_state = (LEMMING_STATE)(index + 3);
     }
 
     void FixedUpdate()

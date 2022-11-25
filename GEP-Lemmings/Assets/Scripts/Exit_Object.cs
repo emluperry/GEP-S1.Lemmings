@@ -11,6 +11,6 @@ public class Exit_Object : MonoBehaviour
     {
         Lemming_Movement lemming = other.GetComponent<Lemming_Movement>();
         if(lemming)
-            onLemmingExit?.Invoke(lemming.LemmingID);
+            onLemmingExit?.Invoke(lemming.m_LemmingID);
     }
 }
