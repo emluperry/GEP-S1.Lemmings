@@ -18,6 +18,12 @@ public class Lemming_Movement : MonoBehaviour
     [SerializeField][Min(0f)] private float m_DeadlyFallTime = 2f;
     private float m_CurrentFallTime = 0f;
 
+    [Header("Alternate Materials")]
+    [SerializeField] private MeshRenderer m_MeshRenderer;
+    [SerializeField] private Material m_StandardMat;
+    [SerializeField] private Material m_BlockingMat;
+
+    [Header("Other")]
     public int m_LemmingID = -1;
 
     private Vector3 m_direction = new Vector3(1, 0, 0);
@@ -77,11 +83,29 @@ public class Lemming_Movement : MonoBehaviour
         if (m_job == LEMMING_JOB.FLOATING)
             onFloating?.Invoke();
 
+        if(m_job == LEMMING_JOB.BLOCKING)
+        {
+            gameObject.layer = 7; //Wall-Lemming layer
+            m_RB.isKinematic = true;
+            m_MeshRenderer.material = m_BlockingMat;
+        }
+        else
+        {
+            gameObject.layer = 6; //Lemming layer
+            m_RB.isKinematic = false;
+            m_MeshRenderer.material = m_StandardMat;
+        }
+
         Debug.Log("Current job: " + m_job);
     }
 
     void FixedUpdate()
     {
+        if(m_job == LEMMING_JOB.BLOCKING)
+        {
+            return;
+        }
+
         switch (m_state)
         {
             case LEMMING_STATE.WALKING:
