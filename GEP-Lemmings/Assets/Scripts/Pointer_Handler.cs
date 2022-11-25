@@ -11,7 +11,12 @@ public class Pointer_Handler : MonoBehaviour
         if(Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
-            if(Physics.SphereCast(Camera.main.ScreenPointToRay(Input.mousePosition), mousePrecisionRadius, out hit))
+
+            Vector3 mousePos = Input.mousePosition;
+            mousePos.z = Camera.main.nearClipPlane;
+            Ray ray = Camera.main.ScreenPointToRay(mousePos);
+
+            if (Physics.SphereCast(ray, mousePrecisionRadius, out hit))
             {
                 Lemming_Movement lemming = hit.transform.gameObject.GetComponent<Lemming_Movement>();
                 if (lemming)
