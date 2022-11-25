@@ -182,7 +182,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7348705319265603548}
   - component: {fileID: 5490483088745411334}
-  - component: {fileID: 4499426454401704952}
+  - component: {fileID: 4682617410649360069}
   - component: {fileID: 3395451237097470863}
   - component: {fileID: 6656000208320186911}
   - component: {fileID: 3818489469065207147}
@@ -222,11 +222,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fff27b4da03751478105ab39e10fb5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Speed: 5
-  m_SpeedDecreaseModifier: 0.2
+  m_Speed: 2
+  m_SpeedDecreaseModifier: 0
+  m_FloatSpeed: 1
   m_MinimumSpeed: 1e-10
-  LemmingID: -1
---- !u!136 &4499426454401704952
+  m_LemmingID: -1
+--- !u!136 &4682617410649360069
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -236,7 +237,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}

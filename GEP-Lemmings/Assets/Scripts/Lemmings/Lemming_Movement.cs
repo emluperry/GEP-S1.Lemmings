@@ -11,14 +11,19 @@ public class Lemming_Movement : MonoBehaviour
 
     [Header("Lemming Properties")]
     [SerializeField][Min(0f)] private float m_Speed = 5;
-    [SerializeField][Min(0f)] private float m_SpeedDecreaseModifier = 0.1f;
-    [SerializeField][Min(0f)] private float m_MinimumSpeed = 0.0000000001f;
+    [SerializeField][Min(0f)] private float m_FloatSpeed = 0.5f;
+    [SerializeField][Min(0f)] private float m_MinimumFallSpeed = 0.0000000001f;
+    [SerializeField][Min(0f)] private float m_CoyoteTime = 0.5f;
+    private float m_CurrentCoyoteTime = 0f;
 
     public int m_LemmingID = -1;
+
     private Vector3 m_direction = new Vector3(1, 0, 0);
+
     private LEMMING_STATE m_state;
-    private LEMMING_JOB m_job;
-    private bool m_hasFallReducedHorizontalVelocity = false;
+    private LEMMING_JOB m_job = LEMMING_JOB.NONE;
+
+    private bool m_hasFallReducedVelocity = false;
 
     private Button_OnClick m_LemmingButton;
     public Action<int> onLemmingClicked;
@@ -75,21 +80,10 @@ public class Lemming_Movement : MonoBehaviour
         {
             case LEMMING_STATE.WALKING:
                 Walking();
-                if (m_RB.velocity.y < -m_MinimumSpeed)
-                {
-                    m_state = LEMMING_STATE.FALLING;
-                }
                 break;
 
             case LEMMING_STATE.FALLING:
                 Falling();
-                if (m_RB.velocity.y > -m_MinimumSpeed)
-                {
-                    m_RB.velocity = new Vector2(0, 0);
-                    m_hasFallReducedHorizontalVelocity = false;
-                    m_state = LEMMING_STATE.WALKING;
-                    onWalking?.Invoke();
-                }
                 break;
             case LEMMING_STATE.TURNING:
                 TurnAround();
@@ -103,16 +97,48 @@ public class Lemming_Movement : MonoBehaviour
         Vector2 NeededAcceleration = (m_Speed * m_direction - new Vector3(m_RB.velocity.x, 0, 0)) / Time.fixedDeltaTime;
 
         m_RB.AddForce(NeededAcceleration, ForceMode.Force);
+
+        if (m_RB.velocity.y < -m_MinimumFallSpeed)
+        {
+            m_CurrentCoyoteTime += Time.fixedDeltaTime;
+            if (m_CurrentCoyoteTime >= m_CoyoteTime)
+            {
+                m_state = LEMMING_STATE.FALLING;
+                m_CurrentCoyoteTime = 0;
+            }
+        }
+        else
+            m_CurrentCoyoteTime = 0;
     }
 
     private void Falling()
     {
-        if (!m_hasFallReducedHorizontalVelocity)
+        if (!m_hasFallReducedVelocity)
         {
-            float newSpeed = m_RB.velocity.x * m_SpeedDecreaseModifier;
-            m_RB.velocity = new Vector3(newSpeed, m_RB.velocity.y, 0);
-            m_hasFallReducedHorizontalVelocity = true;
-            onFalling?.Invoke();
+            if(m_job == LEMMING_JOB.FLOATING)
+                onFloating?.Invoke();
+            else
+                onFalling?.Invoke();
+
+            m_RB.velocity = new Vector3(0, m_RB.velocity.y, 0);
+
+            m_hasFallReducedVelocity = true;
+            return;
+        }
+
+        if (m_job == LEMMING_JOB.FLOATING)
+        {
+            Vector2 NeededAcceleration = (-m_FloatSpeed * Vector3.up - new Vector3(0, m_RB.velocity.y, 0)) / Time.fixedDeltaTime;
+
+            m_RB.AddForce(NeededAcceleration, ForceMode.Force);
+        }
+
+        if (m_RB.velocity.y > -m_MinimumFallSpeed)
+        {
+            m_RB.velocity = new Vector2(0, 0);
+            m_hasFallReducedVelocity = false;
+            m_state = LEMMING_STATE.WALKING;
+            onWalking?.Invoke();
         }
     }
 
