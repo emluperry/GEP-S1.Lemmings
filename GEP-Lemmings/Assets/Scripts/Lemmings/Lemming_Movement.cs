@@ -15,6 +15,8 @@ public class Lemming_Movement : MonoBehaviour
     [SerializeField][Min(0f)] private float m_MinimumFallSpeed = 0.0000000001f;
     [SerializeField][Min(0f)] private float m_CoyoteTime = 0.5f;
     private float m_CurrentCoyoteTime = 0f;
+    [SerializeField][Min(0f)] private float m_DeadlyFallTime = 2f;
+    private float m_CurrentFallTime = 0f;
 
     public int m_LemmingID = -1;
 
@@ -32,6 +34,7 @@ public class Lemming_Movement : MonoBehaviour
     public Action onWalking;
     public Action onFalling;
     public Action onFloating;
+    public Action onDead;
 
     private void Awake()
     {
@@ -70,6 +73,9 @@ public class Lemming_Movement : MonoBehaviour
     public void SetJobState(LEMMING_JOB job)
     {
         m_job = job;
+
+        if (m_job == LEMMING_JOB.FLOATING)
+            onFloating?.Invoke();
 
         Debug.Log("Current job: " + m_job);
     }
@@ -115,10 +121,7 @@ public class Lemming_Movement : MonoBehaviour
     {
         if (!m_hasFallReducedVelocity)
         {
-            if(m_job == LEMMING_JOB.FLOATING)
-                onFloating?.Invoke();
-            else
-                onFalling?.Invoke();
+            onFalling?.Invoke();
 
             m_RB.velocity = new Vector3(0, m_RB.velocity.y, 0);
 
@@ -132,13 +135,27 @@ public class Lemming_Movement : MonoBehaviour
 
             m_RB.AddForce(NeededAcceleration, ForceMode.Force);
         }
+        else
+        {
+            m_CurrentFallTime += Time.fixedDeltaTime;
+        }
 
         if (m_RB.velocity.y > -m_MinimumFallSpeed)
         {
             m_RB.velocity = new Vector2(0, 0);
             m_hasFallReducedVelocity = false;
-            m_state = LEMMING_STATE.WALKING;
-            onWalking?.Invoke();
+
+            if(m_CurrentFallTime >= m_DeadlyFallTime)
+            {
+                onDead?.Invoke();
+                m_state = LEMMING_STATE.DEAD;
+            }
+            else
+            {
+                m_CurrentFallTime = 0;
+                m_state = LEMMING_STATE.WALKING;
+                onWalking?.Invoke();
+            }
         }
     }
 

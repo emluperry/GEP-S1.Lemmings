@@ -8,7 +8,8 @@ namespace Lemmings.Enums
     {
         WALKING,
         FALLING,
-        TURNING
+        TURNING,
+        DEAD
     }
 
     public enum LEMMING_JOB
