@@ -77,18 +77,14 @@ public class Lemming_Movement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.layer != 8) //step layer
+        if(collision.gameObject.layer == 8 && m_direction == collision.gameObject.GetComponent<StairStep>().GetDirection()) //step layer
         {
-            if (m_state != LEMMING_STATE.FALLING)
-                m_state = LEMMING_STATE.TURNING;
+            m_NeedsStepBoost = true;
         }
         else
         {
-
-            if (m_job != LEMMING_JOB.BUILDING && m_direction == collision.gameObject.GetComponent<StairStep>().GetDirection())
-            {
-                m_NeedsStepBoost = true;
-            }
+            if (m_state != LEMMING_STATE.FALLING)
+                m_state = LEMMING_STATE.TURNING;
         }
     }
 
