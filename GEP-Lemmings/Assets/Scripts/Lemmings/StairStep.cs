@@ -13,6 +13,11 @@ public class StairStep : MonoBehaviour
         direction = dir;
     }
 
+    public Vector3 GetDirection()
+    {
+        return direction;
+    }
+
     public void SetNextStep(GameObject next)
     {
         nextStep = next;

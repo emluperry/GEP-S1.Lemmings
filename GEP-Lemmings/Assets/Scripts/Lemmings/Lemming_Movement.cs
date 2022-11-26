@@ -32,6 +32,8 @@ public class Lemming_Movement : MonoBehaviour
     [SerializeField] private float m_BuildDelay = 1f;
     private Coroutine m_buildingRoutine;
     [SerializeField] private float m_ClimbSpeed = 2f;
+    private bool m_NeedsStepBoost = false;
+    [SerializeField] private float m_StepJumpPushback = 0.25f;
 
     [Header("Other")]
     public int m_LemmingID = -1;
@@ -79,6 +81,14 @@ public class Lemming_Movement : MonoBehaviour
         {
             if (m_state != LEMMING_STATE.FALLING)
                 m_state = LEMMING_STATE.TURNING;
+        }
+        else
+        {
+
+            if (m_job != LEMMING_JOB.BUILDING && m_direction == collision.gameObject.GetComponent<StairStep>().GetDirection())
+            {
+                m_NeedsStepBoost = true;
+            }
         }
     }
 
@@ -144,6 +154,13 @@ public class Lemming_Movement : MonoBehaviour
                 TurnAround();
                 m_state = LEMMING_STATE.WALKING;
                 break;
+        }
+
+        if (m_NeedsStepBoost)
+        {
+            m_RB.MovePosition(new Vector3(transform.position.x - (m_StepJumpPushback * m_direction.x), transform.position.y, 0));
+            ClimbStep();
+            m_NeedsStepBoost = false;
         }
     }
 
@@ -216,7 +233,6 @@ public class Lemming_Movement : MonoBehaviour
 
     private IEnumerator BuildStairs()
     {
-        Debug.Log("Running stair builder");
         GameObject step1;
         GameObject step2;
 
@@ -228,7 +244,6 @@ public class Lemming_Movement : MonoBehaviour
         
         do
         {
-            Debug.Log("Updating Stairs");
             yield return new WaitForSeconds(m_BuildDelay);
             step1 = Instantiate(m_BrickObject, GetNewBrickPosition(), Quaternion.identity, step2.transform);
             step1.GetComponent<StairStep>().SetDirection(m_direction);
@@ -248,7 +263,8 @@ public class Lemming_Movement : MonoBehaviour
 
     private void ClimbStep()
     {
-        Vector2 NeededAcceleration = (m_ClimbSpeed * (1.5f * Vector3.up + m_direction) - new Vector3(m_RB.velocity.x, m_RB.velocity.y, 0)) / Time.fixedDeltaTime;
+        m_RB.velocity = new Vector3(0, m_RB.velocity.y, 0);
+        Vector2 NeededAcceleration = (m_ClimbSpeed * (1.5f * Vector3.up + m_direction) - new Vector3(0, m_RB.velocity.y, 0)) / Time.fixedDeltaTime;
 
         m_RB.AddForce(NeededAcceleration, ForceMode.Force);
     }
