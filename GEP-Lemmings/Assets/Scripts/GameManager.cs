@@ -17,6 +17,11 @@ public class GameManager : MonoBehaviour
     [SerializeField][Min(0.01f)] private float m_LemmingSpawnDelay = 0.5f;
     private float m_CurrentInterval = 0;
 
+    [Header("VFX")]
+    [SerializeField] private GameObject m_ExplosionPrefab;
+    private GameObject m_ExplosionObject;
+    [SerializeField] private float m_ExplosionLength = 1f;
+
     [Header("In-Scene References")]
     [SerializeField] private GameObject m_LevelSpawnPoint;
     [SerializeField] private Exit_Object m_LevelEndPoint;
@@ -45,6 +50,9 @@ public class GameManager : MonoBehaviour
             movComp.onExplode += ExplodeEffect;
         }
         m_CurrentInterval = m_LemmingSpawnDelay;
+
+        m_ExplosionObject = Instantiate(m_ExplosionPrefab, transform);
+        m_ExplosionObject.SetActive(false);
     }
 
     private void OnDestroy()
@@ -81,6 +89,15 @@ public class GameManager : MonoBehaviour
 
     private void ExplodeEffect(Vector3 position)
     {
+        m_ExplosionObject.transform.position = position + new Vector3(0, 0, -3);
+        m_ExplosionObject.SetActive(true);
 
+        StartCoroutine(CountdownExplosion());
+    }
+
+    private IEnumerator CountdownExplosion()
+    {
+        yield return new WaitForSeconds(m_ExplosionLength);
+        m_ExplosionObject.SetActive(false);
     }
 }
