@@ -45,5 +45,4 @@ public class Lemming_Animation : MonoBehaviour
     {
         m_Animator.SetTrigger("die");
     }
-
 }

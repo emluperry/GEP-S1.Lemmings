@@ -29,7 +29,6 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-
         //events
         m_LevelEndPoint.onLemmingExit += DeactivateLemming;
         m_UIHandler.onRoleChosen += UpdateJobCast;
@@ -40,8 +39,10 @@ public class GameManager : MonoBehaviour
         {
             m_ArrLemmings[index] = Instantiate(m_LemmingObject, m_LevelSpawnPoint.transform.position, Quaternion.identity, gameObject.transform);
             m_ArrLemmings[index].SetActive(false);
-            m_ArrLemmings[index].GetComponent<Lemming_Movement>().m_LemmingID = index;
-            m_ArrLemmings[index].GetComponent<Lemming_Movement>().onLemmingClicked += SetLemmingJob;
+            Lemming_Movement movComp = m_ArrLemmings[index].GetComponent<Lemming_Movement>();
+            movComp.m_LemmingID = index;
+            movComp.onLemmingClicked += SetLemmingJob;
+            movComp.onExplode += ExplodeEffect;
         }
         m_CurrentInterval = m_LemmingSpawnDelay;
     }
@@ -76,5 +77,10 @@ public class GameManager : MonoBehaviour
     private void UpdateJobCast(LEMMING_JOB job)
     {
         m_CurrentJob = job;
+    }
+
+    private void ExplodeEffect(Vector3 position)
+    {
+
     }
 }

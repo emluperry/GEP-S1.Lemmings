@@ -223,19 +223,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Speed: 2
-  m_FloatSpeed: 1
   m_MinimumFallSpeed: 1e-10
   m_CoyoteTime: 0.25
   m_DeadlyFallTime: 1
   m_MeshRenderer: {fileID: 7787262705173708251}
   m_StandardMat: {fileID: 2100000, guid: 06d227aa5d7674e4dbe94d3952eb0789, type: 2}
   m_BlockingMat: {fileID: 2100000, guid: 6281f9ecfe87e994abae5df2235dd8fb, type: 2}
+  m_FloatSpeed: 1
   m_BrickObject: {fileID: 5723666580899765617, guid: ab39779331dd1054dbc70ad962ab677c,
     type: 3}
   m_maxSteps: 5
   m_BuildDelay: 0.5
   m_ClimbSpeed: 2.5
   m_StepJumpPushback: 0.1
+  m_ExplosionCountdown: 5
+  m_ExplosionRadius: 2
+  m_ExplosionLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
   m_LemmingID: -1
 --- !u!136 &4682617410649360069
 CapsuleCollider:
