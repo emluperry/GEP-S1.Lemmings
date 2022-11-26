@@ -3,30 +3,56 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+using Lemmings.Enums;
+
 public class GameManager : MonoBehaviour
 {
-    [Header("Level Properties")]
     [SerializeField] private GameObject m_LemmingObject;
+
+    [Header("Level Properties")]
     [SerializeField][Min(0f)] private int m_MaxLemmings = 10;
     private GameObject[] m_ArrLemmings;
     private int m_LastActiveLemming = 0;
+
     [SerializeField][Min(0.01f)] private float m_LemmingSpawnDelay = 0.5f;
     private float m_CurrentInterval = 0;
+
+    [Header("VFX")]
+    [SerializeField] private GameObject m_ExplosionPrefab;
+    private GameObject m_ExplosionObject;
+    [SerializeField] private float m_ExplosionLength = 1f;
+
+    [Header("In-Scene References")]
     [SerializeField] private GameObject m_LevelSpawnPoint;
     [SerializeField] private Exit_Object m_LevelEndPoint;
 
-    private void Start()
-    {
-        m_LevelEndPoint.onLemmingExit += DeactivateLemming;
+    [Header("Mouse References")]
+    private LEMMING_JOB m_CurrentJob = LEMMING_JOB.NONE;
 
+    [Header("UI References")]
+    [SerializeField] private HUD_ButtonManager m_UIHandler;
+
+    private void Awake()
+    {
+        //events
+        m_LevelEndPoint.onLemmingExit += DeactivateLemming;
+        m_UIHandler.onRoleChosen += UpdateJobCast;
+
+        //lemmings
         m_ArrLemmings = new GameObject[m_MaxLemmings];
-        for(int index = 0; index < m_MaxLemmings; index++)
+        for (int index = 0; index < m_MaxLemmings; index++)
         {
             m_ArrLemmings[index] = Instantiate(m_LemmingObject, m_LevelSpawnPoint.transform.position, Quaternion.identity, gameObject.transform);
             m_ArrLemmings[index].SetActive(false);
-            m_ArrLemmings[index].GetComponent<Lemming_Movement>().LemmingID = index;
+            Lemming_Movement movComp = m_ArrLemmings[index].GetComponent<Lemming_Movement>();
+            movComp.m_LemmingID = index;
+            movComp.onLemmingClicked += SetLemmingJob;
+            movComp.onExplode += ExplodeEffect;
         }
         m_CurrentInterval = m_LemmingSpawnDelay;
+
+        m_ExplosionObject = Instantiate(m_ExplosionPrefab, transform);
+        m_ExplosionObject.SetActive(false);
     }
 
     private void OnDestroy()
@@ -49,5 +75,29 @@ public class GameManager : MonoBehaviour
     {
         m_ArrLemmings[LemmingIndex].SetActive(false);
         //increase number of successful lemmings
+    }
+
+    private void SetLemmingJob(int LemmingIndex)
+    {
+        m_ArrLemmings[LemmingIndex].GetComponent<Lemming_Movement>().SetJobState(m_CurrentJob);
+    }
+
+    private void UpdateJobCast(LEMMING_JOB job)
+    {
+        m_CurrentJob = job;
+    }
+
+    private void ExplodeEffect(Vector3 position)
+    {
+        m_ExplosionObject.transform.position = position + new Vector3(0, 0, -3);
+        m_ExplosionObject.SetActive(true);
+
+        StartCoroutine(CountdownExplosion());
+    }
+
+    private IEnumerator CountdownExplosion()
+    {
+        yield return new WaitForSeconds(m_ExplosionLength);
+        m_ExplosionObject.SetActive(false);
     }
 }
