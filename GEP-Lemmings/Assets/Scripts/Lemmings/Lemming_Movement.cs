@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Lemmings.Enums;
+using UnityEditor.Build.Reporting;
+using Unity.VisualScripting;
 
 public class Lemming_Movement : MonoBehaviour
 {
@@ -22,6 +24,14 @@ public class Lemming_Movement : MonoBehaviour
     [SerializeField] private MeshRenderer m_MeshRenderer;
     [SerializeField] private Material m_StandardMat;
     [SerializeField] private Material m_BlockingMat;
+
+    [Header("Building")]
+    [SerializeField] private GameObject m_BrickObject;
+    private int m_numStepsPlaced = 0;
+    [SerializeField] private int m_maxSteps = 5;
+    [SerializeField] private float m_BuildDelay = 1f;
+    private Coroutine m_buildingRoutine;
+    [SerializeField] private float m_ClimbSpeed = 2f;
 
     [Header("Other")]
     public int m_LemmingID = -1;
@@ -45,6 +55,7 @@ public class Lemming_Movement : MonoBehaviour
     private void Awake()
     {
         m_LemmingButton = GetComponentInChildren<Button_OnClick>();
+        m_buildingRoutine = null;
     }
 
     private void OnEnable()
@@ -64,7 +75,7 @@ public class Lemming_Movement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject)
+        if(collision.gameObject.layer != 8) //step layer
         {
             if (m_state != LEMMING_STATE.FALLING)
                 m_state = LEMMING_STATE.TURNING;
@@ -96,14 +107,28 @@ public class Lemming_Movement : MonoBehaviour
             m_MeshRenderer.material = m_StandardMat;
         }
 
+        if(m_job == LEMMING_JOB.BUILDING)
+        {
+            Debug.Log("Start building");
+            m_buildingRoutine = StartCoroutine(BuildStairs());
+        }
+        else
+        {
+            StopCoroutine(m_buildingRoutine);
+        }
+
         Debug.Log("Current job: " + m_job);
     }
 
     void FixedUpdate()
     {
-        if(m_job == LEMMING_JOB.BLOCKING)
+        switch(m_job)
         {
-            return;
+            case LEMMING_JOB.BLOCKING:
+                return;
+
+            case LEMMING_JOB.BUILDING:
+                return;
         }
 
         switch (m_state)
@@ -187,5 +212,44 @@ public class Lemming_Movement : MonoBehaviour
     {
         m_direction *= -1;
         m_RB.velocity = new Vector2(m_RB.velocity.x * -1, 0);
+    }
+
+    private IEnumerator BuildStairs()
+    {
+        Debug.Log("Running stair builder");
+        GameObject step1;
+        GameObject step2;
+
+        step1 = Instantiate(m_BrickObject, GetNewBrickPosition(), Quaternion.identity);
+        step1.GetComponent<StairStep>().SetDirection(m_direction);
+        m_numStepsPlaced++;
+        ClimbStep();
+        step2 = step1;
+        
+        do
+        {
+            Debug.Log("Updating Stairs");
+            yield return new WaitForSeconds(m_BuildDelay);
+            step1 = Instantiate(m_BrickObject, GetNewBrickPosition(), Quaternion.identity, step2.transform);
+            step1.GetComponent<StairStep>().SetDirection(m_direction);
+            step2.GetComponent<StairStep>().SetNextStep(step1);
+            m_numStepsPlaced++;
+            ClimbStep();
+            step2 = step1;
+        } while (m_numStepsPlaced <= m_maxSteps);
+
+        m_job = LEMMING_JOB.NONE;
+    }
+
+    private Vector3 GetNewBrickPosition()
+    {
+        return transform.position + m_direction - new Vector3(0, 0.75f, 0);
+    }
+
+    private void ClimbStep()
+    {
+        Vector2 NeededAcceleration = (m_ClimbSpeed * (1.5f * Vector3.up + m_direction) - new Vector3(m_RB.velocity.x, m_RB.velocity.y, 0)) / Time.fixedDeltaTime;
+
+        m_RB.AddForce(NeededAcceleration, ForceMode.Force);
     }
 }

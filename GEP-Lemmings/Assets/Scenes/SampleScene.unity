@@ -863,6 +863,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EXIT
       objectReference: {fileID: 0}
+    - target: {fileID: 7834339689085665029, guid: 3442bfc9a36edc84c8699b7b6800fa6d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 3442bfc9a36edc84c8699b7b6800fa6d, type: 3}
@@ -889,6 +894,11 @@ PrefabInstance:
       propertyPath: m_UIHandler
       value: 
       objectReference: {fileID: 624976830}
+    - target: {fileID: 6355129602616715050, guid: 8ab6c60cae3142c408b9f2945c9ccad7,
+        type: 3}
+      propertyPath: m_MaxLemmings
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6355129602616715050, guid: 8ab6c60cae3142c408b9f2945c9ccad7,
         type: 3}
       propertyPath: m_LemmingObject
@@ -1096,6 +1106,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: HUD
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500947678277789112, guid: 57218446699788f43b473b642fb30052,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4500947678277789116, guid: 57218446699788f43b473b642fb30052,
         type: 3}
