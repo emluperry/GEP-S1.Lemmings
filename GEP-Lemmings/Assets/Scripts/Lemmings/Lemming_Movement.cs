@@ -57,6 +57,8 @@ public class Lemming_Movement : MonoBehaviour
     private Button_OnClick m_LemmingButton;
     public Action<int> onLemmingClicked;
 
+    public Action<int> onDeactivate;
+
     //actions
     public Action onWalking;
     public Action onFalling;
@@ -77,7 +79,13 @@ public class Lemming_Movement : MonoBehaviour
 
     private void OnDisable()
     {
+        DeactivateLemming();
+    }
+
+    private void DeactivateLemming()
+    {
         m_LemmingButton.OnClicked -= LemmingClicked;
+        onDeactivate?.Invoke(m_LemmingID);
     }
 
     private void Start()
@@ -90,6 +98,10 @@ public class Lemming_Movement : MonoBehaviour
         if(collision.gameObject.layer == 8 && m_direction == collision.gameObject.GetComponent<StairStep>().GetDirection()) //step layer
         {
             m_NeedsStepBoost = true;
+        }
+        else if (collision.gameObject.layer == 10) //death collision layer
+        {
+            KillLemming();
         }
         else
         {
@@ -140,8 +152,11 @@ public class Lemming_Movement : MonoBehaviour
         }
         else
         {
-            StopCoroutine(m_JobCoroutine);
-            m_CurrentCountdown = m_ExplosionCountdown;
+            if (m_JobCoroutine != null)
+            {
+                StopCoroutine(m_JobCoroutine);
+                m_CurrentCountdown = m_ExplosionCountdown;
+            }
         }
     }
 
@@ -222,8 +237,7 @@ public class Lemming_Movement : MonoBehaviour
 
             if(m_CurrentFallTime >= m_DeadlyFallTime)
             {
-                onDead?.Invoke();
-                m_state = LEMMING_STATE.DEAD;
+                KillLemming();
             }
             else
             {
@@ -292,6 +306,11 @@ public class Lemming_Movement : MonoBehaviour
             hit.collider.gameObject.SetActive(false);
         }
         onExplode?.Invoke(transform.position);
+        KillLemming();
+    }
+
+    private void KillLemming()
+    {
         onDead?.Invoke();
         m_state = LEMMING_STATE.DEAD;
     }

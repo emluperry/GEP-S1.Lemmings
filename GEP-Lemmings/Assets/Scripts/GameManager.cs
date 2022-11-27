@@ -13,9 +13,13 @@ public class GameManager : MonoBehaviour
     [SerializeField][Min(0f)] private int m_MaxLemmings = 10;
     private GameObject[] m_ArrLemmings;
     private int m_LastActiveLemming = 0;
+    private int m_CurrentActiveLemming = 0;
 
     [SerializeField][Min(0.01f)] private float m_LemmingSpawnDelay = 0.5f;
     private float m_CurrentInterval = 0;
+
+    [SerializeField][Min(1)] private int m_WinNum = 5;
+    private int m_CurrentNumIn = 0;
 
     [Header("VFX")]
     [SerializeField] private GameObject m_ExplosionPrefab;
@@ -35,10 +39,11 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         //events
-        m_LevelEndPoint.onLemmingExit += DeactivateLemming;
+        m_LevelEndPoint.onLemmingExit += LemmingExitStage;
         m_UIHandler.onRoleChosen += UpdateJobCast;
 
         //lemmings
+        m_CurrentActiveLemming = m_MaxLemmings;
         m_ArrLemmings = new GameObject[m_MaxLemmings];
         for (int index = 0; index < m_MaxLemmings; index++)
         {
@@ -48,6 +53,7 @@ public class GameManager : MonoBehaviour
             movComp.m_LemmingID = index;
             movComp.onLemmingClicked += SetLemmingJob;
             movComp.onExplode += ExplodeEffect;
+            movComp.onDeactivate += DeactivateLemming;
         }
         m_CurrentInterval = m_LemmingSpawnDelay;
 
@@ -57,7 +63,13 @@ public class GameManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        m_LevelEndPoint.onLemmingExit -= DeactivateLemming;
+        m_LevelEndPoint.onLemmingExit -= LemmingExitStage;
+        m_UIHandler.onRoleChosen -= UpdateJobCast;
+
+        for (int index = 0; index < m_MaxLemmings; index++)
+        {
+            DeactivateLemming(index);
+        }
     }
 
     private void Update()
@@ -71,10 +83,32 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void LemmingExitStage(int LemmingIndex)
+    {
+        m_CurrentNumIn++;
+
+        if(m_CurrentNumIn >= m_WinNum)
+        {
+            Debug.Log("Win game!");
+        }
+
+        DeactivateLemming(LemmingIndex);
+    }
+
     private void DeactivateLemming(int LemmingIndex)
     {
         m_ArrLemmings[LemmingIndex].SetActive(false);
-        //increase number of successful lemmings
+        m_CurrentActiveLemming--;
+
+        Lemming_Movement movComp = m_ArrLemmings[LemmingIndex].GetComponent<Lemming_Movement>();
+        movComp.onLemmingClicked -= SetLemmingJob;
+        movComp.onExplode -= ExplodeEffect;
+        movComp.onDeactivate -= DeactivateLemming;
+
+        if (m_CurrentActiveLemming < m_WinNum - m_CurrentNumIn)
+        {
+            Debug.Log("Too many dead. Lose game.");
+        }
     }
 
     private void SetLemmingJob(int LemmingIndex)
