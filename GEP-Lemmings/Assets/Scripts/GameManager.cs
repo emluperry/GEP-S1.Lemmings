@@ -21,6 +21,12 @@ public class GameManager : MonoBehaviour
     [SerializeField][Min(1)] private int m_WinNum = 5;
     private int m_CurrentNumIn = 0;
 
+    [Header("Role counts")]
+    [SerializeField][Min(-1)] private int m_MaxNumFloat = 0;
+    [SerializeField][Min(-1)] private int m_MaxNumBlock = 0;
+    [SerializeField][Min(-1)] private int m_MaxNumBuild = 0;
+    [SerializeField][Min(-1)] private int m_MaxNumExplode = 0;
+
     [Header("VFX")]
     [SerializeField] private GameObject m_ExplosionPrefab;
     private GameObject m_ExplosionObject;
@@ -34,13 +40,13 @@ public class GameManager : MonoBehaviour
     private LEMMING_JOB m_CurrentJob = LEMMING_JOB.NONE;
 
     [Header("UI References")]
-    [SerializeField] private HUD_ButtonManager m_UIHandler;
+    [SerializeField] private HUD_ButtonManager m_HUDButtons;
 
     private void Awake()
     {
         //events
         m_LevelEndPoint.onLemmingExit += LemmingExitStage;
-        m_UIHandler.onRoleChosen += UpdateJobCast;
+        m_HUDButtons.onRoleChosen += UpdateJobCast;
 
         //lemmings
         m_CurrentActiveLemming = m_MaxLemmings;
@@ -62,10 +68,19 @@ public class GameManager : MonoBehaviour
         m_ExplosionObject.SetActive(false);
     }
 
+    private void Start()
+    {
+        //roles
+        m_HUDButtons.UpdateValue(LEMMING_JOB.FLOATING, m_MaxNumFloat);
+        m_HUDButtons.UpdateValue(LEMMING_JOB.BUILDING, m_MaxNumBuild);
+        m_HUDButtons.UpdateValue(LEMMING_JOB.BLOCKING, m_MaxNumBlock);
+        m_HUDButtons.UpdateValue(LEMMING_JOB.EXPLODING, m_MaxNumExplode);
+    }
+
     private void OnDestroy()
     {
         m_LevelEndPoint.onLemmingExit -= LemmingExitStage;
-        m_UIHandler.onRoleChosen -= UpdateJobCast;
+        m_HUDButtons.onRoleChosen -= UpdateJobCast;
 
         for (int index = 0; index < m_MaxLemmings; index++)
         {
@@ -119,7 +134,50 @@ public class GameManager : MonoBehaviour
 
     private void SetLemmingJob(int LemmingIndex)
     {
-        m_ArrLemmings[LemmingIndex].GetComponent<Lemming_Movement>().SetJobState(m_CurrentJob);
+        switch (m_CurrentJob)
+        {
+            case LEMMING_JOB.FLOATING:
+                if (m_MaxNumFloat <= 0)
+                    return;
+                break;
+            case LEMMING_JOB.BLOCKING:
+                if (m_MaxNumBlock <= 0)
+                    return;
+                break;
+            case LEMMING_JOB.BUILDING:
+                if (m_MaxNumBuild <= 0)
+                    return;
+                break;
+            case LEMMING_JOB.EXPLODING:
+                if (m_MaxNumExplode <= 0)
+                    return;
+                break;
+        }
+
+        bool wasSet = m_ArrLemmings[LemmingIndex].GetComponent<Lemming_Movement>().SetJobState(m_CurrentJob);
+
+        if (!wasSet)
+            return;
+
+        switch (m_CurrentJob)
+        {
+            case LEMMING_JOB.FLOATING:
+                m_MaxNumFloat--;
+                m_HUDButtons.UpdateValue(m_CurrentJob, m_MaxNumFloat);
+                break;
+            case LEMMING_JOB.BLOCKING:
+                m_MaxNumBlock--;
+                m_HUDButtons.UpdateValue(m_CurrentJob, m_MaxNumBlock);
+                break;
+            case LEMMING_JOB.BUILDING:
+                m_MaxNumBuild--;
+                m_HUDButtons.UpdateValue(m_CurrentJob, m_MaxNumBuild);
+                break;
+            case LEMMING_JOB.EXPLODING:
+                m_MaxNumExplode--;
+                m_HUDButtons.UpdateValue(m_CurrentJob, m_MaxNumExplode);
+                break;
+        }
     }
 
     private void UpdateJobCast(LEMMING_JOB job)

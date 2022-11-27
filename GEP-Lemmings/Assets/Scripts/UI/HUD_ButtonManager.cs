@@ -13,6 +13,11 @@ public class HUD_ButtonManager : MonoBehaviour
     [SerializeField] private Button_OnClick ExplodeJob;
     [SerializeField] private Button_OnClick NoneJob;
 
+    [SerializeField] private UpdatableValue FloatVal;
+    [SerializeField] private UpdatableValue BlockingVal;
+    [SerializeField] private UpdatableValue BuildVal;
+    [SerializeField] private UpdatableValue ExplodeVal;
+
     public event Action<LEMMING_JOB> onRoleChosen;
 
     private void Start()
@@ -53,5 +58,24 @@ public class HUD_ButtonManager : MonoBehaviour
     private void SetNone()
     {
         onRoleChosen?.Invoke(LEMMING_JOB.NONE);
+    }
+
+    public void UpdateValue(LEMMING_JOB job, int newVal)
+    {
+        switch (job)
+        {
+            case LEMMING_JOB.FLOATING:
+                FloatVal.UpdateValue(newVal);
+                break;
+            case LEMMING_JOB.BLOCKING:
+                BlockingVal.UpdateValue(newVal);
+                break;
+            case LEMMING_JOB.BUILDING:
+                BuildVal.UpdateValue(newVal);
+                break;
+            case LEMMING_JOB.EXPLODING:
+                ExplodeVal.UpdateValue(newVal);
+                break;
+        }
     }
 }

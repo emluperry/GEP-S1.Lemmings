@@ -1136,8 +1136,23 @@ PrefabInstance:
       objectReference: {fileID: 624976830}
     - target: {fileID: 6355129602616715050, guid: 8ab6c60cae3142c408b9f2945c9ccad7,
         type: 3}
+      propertyPath: m_HUDButtons
+      value: 
+      objectReference: {fileID: 624976830}
+    - target: {fileID: 6355129602616715050, guid: 8ab6c60cae3142c408b9f2945c9ccad7,
+        type: 3}
       propertyPath: m_MaxLemmings
-      value: 5
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6355129602616715050, guid: 8ab6c60cae3142c408b9f2945c9ccad7,
+        type: 3}
+      propertyPath: m_MaxNumBuild
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6355129602616715050, guid: 8ab6c60cae3142c408b9f2945c9ccad7,
+        type: 3}
+      propertyPath: m_MaxNumFloat
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6355129602616715050, guid: 8ab6c60cae3142c408b9f2945c9ccad7,
         type: 3}
@@ -1150,6 +1165,11 @@ PrefabInstance:
       propertyPath: m_LevelEndPoint
       value: 
       objectReference: {fileID: 7245376815553672490}
+    - target: {fileID: 6355129602616715050, guid: 8ab6c60cae3142c408b9f2945c9ccad7,
+        type: 3}
+      propertyPath: m_MaxNumExplode
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6355129602616715050, guid: 8ab6c60cae3142c408b9f2945c9ccad7,
         type: 3}
       propertyPath: m_ExplosionLength
@@ -1362,11 +1382,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: HUD
-      objectReference: {fileID: 0}
-    - target: {fileID: 4500947678277789112, guid: 57218446699788f43b473b642fb30052,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4500947678277789116, guid: 57218446699788f43b473b642fb30052,
         type: 3}

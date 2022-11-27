@@ -115,10 +115,10 @@ public class Lemming_Movement : MonoBehaviour
         onLemmingClicked?.Invoke(m_LemmingID);
     }
 
-    public void SetJobState(LEMMING_JOB job)
+    public bool SetJobState(LEMMING_JOB job)
     {
         if (job == m_job || m_state == LEMMING_STATE.DEAD)
-            return;
+            return false;
 
         m_job = job;
 
@@ -158,6 +158,8 @@ public class Lemming_Movement : MonoBehaviour
                 m_CurrentCountdown = m_ExplosionCountdown;
             }
         }
+
+        return true;
     }
 
     void FixedUpdate()
