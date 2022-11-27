@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
             movComp.m_LemmingID = index;
             movComp.onLemmingClicked += SetLemmingJob;
             movComp.onExplode += ExplodeEffect;
+            movComp.onDead += KillLemming;
             movComp.onDeactivate += DeactivateLemming;
         }
         m_CurrentInterval = m_LemmingSpawnDelay;
@@ -95,20 +96,25 @@ public class GameManager : MonoBehaviour
         DeactivateLemming(LemmingIndex);
     }
 
-    private void DeactivateLemming(int LemmingIndex)
+    private void KillLemming(int LemmingIndex)
     {
-        m_ArrLemmings[LemmingIndex].SetActive(false);
         m_CurrentActiveLemming--;
-
-        Lemming_Movement movComp = m_ArrLemmings[LemmingIndex].GetComponent<Lemming_Movement>();
-        movComp.onLemmingClicked -= SetLemmingJob;
-        movComp.onExplode -= ExplodeEffect;
-        movComp.onDeactivate -= DeactivateLemming;
 
         if (m_CurrentActiveLemming < m_WinNum - m_CurrentNumIn)
         {
             Debug.Log("Too many dead. Lose game.");
         }
+    }
+
+    private void DeactivateLemming(int LemmingIndex)
+    {
+        m_ArrLemmings[LemmingIndex].SetActive(false);
+
+        Lemming_Movement movComp = m_ArrLemmings[LemmingIndex].GetComponent<Lemming_Movement>();
+        movComp.onLemmingClicked -= SetLemmingJob;
+        movComp.onExplode -= ExplodeEffect;
+        movComp.onDead -= KillLemming;
+        movComp.onDeactivate -= DeactivateLemming;
     }
 
     private void SetLemmingJob(int LemmingIndex)

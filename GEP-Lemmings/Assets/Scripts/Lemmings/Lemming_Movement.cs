@@ -63,7 +63,7 @@ public class Lemming_Movement : MonoBehaviour
     public Action onWalking;
     public Action onFalling;
     public Action onFloating;
-    public Action onDead;
+    public Action<int> onDead;
     public Action<Vector3> onExplode;
 
     private void Awake()
@@ -311,7 +311,7 @@ public class Lemming_Movement : MonoBehaviour
 
     private void KillLemming()
     {
-        onDead?.Invoke();
+        onDead?.Invoke(m_LemmingID);
         m_state = LEMMING_STATE.DEAD;
     }
 }
