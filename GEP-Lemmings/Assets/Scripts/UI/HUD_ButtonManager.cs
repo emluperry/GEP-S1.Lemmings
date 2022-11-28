@@ -7,16 +7,26 @@ using Lemmings.Enums;
 
 public class HUD_ButtonManager : MonoBehaviour
 {
+    [Header("Buttons")]
     [SerializeField] private Button_OnClick FloatJob;
     [SerializeField] private Button_OnClick BlockingJob;
     [SerializeField] private Button_OnClick BuildJob;
     [SerializeField] private Button_OnClick ExplodeJob;
     [SerializeField] private Button_OnClick NoneJob;
 
+    [Header("Role Numbers")]
     [SerializeField] private UpdatableValue FloatVal;
     [SerializeField] private UpdatableValue BlockingVal;
     [SerializeField] private UpdatableValue BuildVal;
     [SerializeField] private UpdatableValue ExplodeVal;
+
+    [Header("Stat Numbers")]
+    [SerializeField] private UpdatableValue TimerMins;
+    [SerializeField] private UpdatableValue TimerSecs;
+    [SerializeField] private UpdatableValue CurrentLemmings;
+    [SerializeField] private UpdatableValue NumWinningLemmings;
+    [SerializeField] private UpdatableValue NumTotalWinLemmings;
+
 
     public event Action<LEMMING_JOB> onRoleChosen;
 
@@ -60,22 +70,48 @@ public class HUD_ButtonManager : MonoBehaviour
         onRoleChosen?.Invoke(LEMMING_JOB.NONE);
     }
 
-    public void UpdateValue(LEMMING_JOB job, int newVal)
+    public void UpdateJob(LEMMING_JOB job, int newVal)
     {
         switch (job)
         {
             case LEMMING_JOB.FLOATING:
-                FloatVal.UpdateValue(newVal);
+                FloatVal.UpdateValue(newVal.ToString());
                 break;
             case LEMMING_JOB.BLOCKING:
-                BlockingVal.UpdateValue(newVal);
+                BlockingVal.UpdateValue(newVal.ToString());
                 break;
             case LEMMING_JOB.BUILDING:
-                BuildVal.UpdateValue(newVal);
+                BuildVal.UpdateValue(newVal.ToString());
                 break;
             case LEMMING_JOB.EXPLODING:
-                ExplodeVal.UpdateValue(newVal);
+                ExplodeVal.UpdateValue(newVal.ToString());
                 break;
         }
+    }
+
+    //write function(s?) to update: timer values, current lemming values
+    public void SetTotalLemmingsNeeded(int num)
+    {
+        NumTotalWinLemmings.UpdateValue("/" + num.ToString());
+    }
+
+    public void UpdateWinningNumLemmings(int num)
+    {
+        NumWinningLemmings.UpdateValue(num.ToString());
+    }
+
+    public void UpdateActiveNumLemmings(int num)
+    {
+        CurrentLemmings.UpdateValue(num.ToString() + "-");
+    }
+
+    public void UpdateSeconds(int num)
+    {
+        TimerSecs.UpdateValue(num.ToString() + "s");
+    }
+
+    public void UpdateMinutes(int num)
+    {
+        TimerMins.UpdateValue(num.ToString() + "m");
     }
 }

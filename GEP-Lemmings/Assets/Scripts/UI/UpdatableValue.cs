@@ -12,8 +12,8 @@ public class UpdatableValue : MonoBehaviour
         m_TMP = GetComponent<TextMeshProUGUI>();
     }
 
-    public void UpdateValue(int val)
+    public void UpdateValue(string val)
     {
-        m_TMP.text = val.ToString();
+        m_TMP.text = val;
     }
 }

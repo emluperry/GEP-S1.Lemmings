@@ -13,13 +13,15 @@ public class GameManager : MonoBehaviour
     [SerializeField][Min(0f)] private int m_MaxLemmings = 10;
     private GameObject[] m_ArrLemmings;
     private int m_LastActiveLemming = 0;
-    private int m_CurrentActiveLemming = 0;
+    private int m_CurrentLivingLemmingNum = 0;
 
     [SerializeField][Min(0.01f)] private float m_LemmingSpawnDelay = 0.5f;
     private float m_CurrentInterval = 0;
 
     [SerializeField][Min(1)] private int m_WinNum = 5;
     private int m_CurrentNumIn = 0;
+
+    [SerializeField][Min(0)] private float m_MaximumTimeLimitInSeconds = 300f;
 
     [Header("Role counts")]
     [SerializeField][Min(-1)] private int m_MaxNumFloat = 0;
@@ -49,7 +51,7 @@ public class GameManager : MonoBehaviour
         m_HUDButtons.onRoleChosen += UpdateJobCast;
 
         //lemmings
-        m_CurrentActiveLemming = m_MaxLemmings;
+        m_CurrentLivingLemmingNum = m_MaxLemmings;
         m_ArrLemmings = new GameObject[m_MaxLemmings];
         for (int index = 0; index < m_MaxLemmings; index++)
         {
@@ -71,10 +73,16 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         //roles
-        m_HUDButtons.UpdateValue(LEMMING_JOB.FLOATING, m_MaxNumFloat);
-        m_HUDButtons.UpdateValue(LEMMING_JOB.BUILDING, m_MaxNumBuild);
-        m_HUDButtons.UpdateValue(LEMMING_JOB.BLOCKING, m_MaxNumBlock);
-        m_HUDButtons.UpdateValue(LEMMING_JOB.EXPLODING, m_MaxNumExplode);
+        m_HUDButtons.UpdateJob(LEMMING_JOB.FLOATING, m_MaxNumFloat);
+        m_HUDButtons.UpdateJob(LEMMING_JOB.BUILDING, m_MaxNumBuild);
+        m_HUDButtons.UpdateJob(LEMMING_JOB.BLOCKING, m_MaxNumBlock);
+        m_HUDButtons.UpdateJob(LEMMING_JOB.EXPLODING, m_MaxNumExplode);
+
+        //other hud stats
+        m_HUDButtons.SetTotalLemmingsNeeded(m_WinNum);
+        m_HUDButtons.UpdateActiveNumLemmings(m_CurrentLivingLemmingNum);
+
+        StartCoroutine(Timer());
     }
 
     private void OnDestroy()
@@ -99,11 +107,41 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private IEnumerator Timer()
+    {
+        int minutes = (int)(m_MaximumTimeLimitInSeconds / 60);
+        int seconds = (int)(m_MaximumTimeLimitInSeconds % 60);
+        m_HUDButtons.UpdateMinutes(minutes);
+        m_HUDButtons.UpdateSeconds(seconds);
+
+        float secs = 0f;
+        while (!(minutes == 0 && seconds == 0))
+        {
+            yield return new WaitForFixedUpdate();
+            secs += Time.fixedDeltaTime;
+
+            if(secs > 1)
+            {
+                seconds -= 1;
+                secs -= 1;
+                if(seconds < 0)
+                {
+                    seconds += 60;
+                    minutes -= 1;
+                    m_HUDButtons.UpdateMinutes(minutes);
+                }
+                m_HUDButtons.UpdateSeconds(seconds);
+            }
+        }
+    }
+
     private void LemmingExitStage(int LemmingIndex)
     {
         m_CurrentNumIn++;
+        m_HUDButtons.UpdateWinningNumLemmings(m_CurrentNumIn);
+        m_HUDButtons.UpdateActiveNumLemmings(m_CurrentLivingLemmingNum - m_CurrentNumIn);
 
-        if(m_CurrentNumIn >= m_WinNum)
+        if (m_CurrentNumIn >= m_WinNum)
         {
             Debug.Log("Win game!");
         }
@@ -113,9 +151,10 @@ public class GameManager : MonoBehaviour
 
     private void KillLemming(int LemmingIndex)
     {
-        m_CurrentActiveLemming--;
+        m_CurrentLivingLemmingNum--;
+        m_HUDButtons.UpdateActiveNumLemmings(m_CurrentLivingLemmingNum);
 
-        if (m_CurrentActiveLemming < m_WinNum - m_CurrentNumIn)
+        if (m_CurrentLivingLemmingNum < m_WinNum)
         {
             Debug.Log("Too many dead. Lose game.");
         }
@@ -163,19 +202,19 @@ public class GameManager : MonoBehaviour
         {
             case LEMMING_JOB.FLOATING:
                 m_MaxNumFloat--;
-                m_HUDButtons.UpdateValue(m_CurrentJob, m_MaxNumFloat);
+                m_HUDButtons.UpdateJob(m_CurrentJob, m_MaxNumFloat);
                 break;
             case LEMMING_JOB.BLOCKING:
                 m_MaxNumBlock--;
-                m_HUDButtons.UpdateValue(m_CurrentJob, m_MaxNumBlock);
+                m_HUDButtons.UpdateJob(m_CurrentJob, m_MaxNumBlock);
                 break;
             case LEMMING_JOB.BUILDING:
                 m_MaxNumBuild--;
-                m_HUDButtons.UpdateValue(m_CurrentJob, m_MaxNumBuild);
+                m_HUDButtons.UpdateJob(m_CurrentJob, m_MaxNumBuild);
                 break;
             case LEMMING_JOB.EXPLODING:
                 m_MaxNumExplode--;
-                m_HUDButtons.UpdateValue(m_CurrentJob, m_MaxNumExplode);
+                m_HUDButtons.UpdateJob(m_CurrentJob, m_MaxNumExplode);
                 break;
         }
     }
