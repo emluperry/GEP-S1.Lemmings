@@ -265,6 +265,7 @@ public class Lemming_Movement : MonoBehaviour
         } while (m_numStepsPlaced <= m_maxSteps);
 
         m_job = LEMMING_JOB.NONE;
+        m_numStepsPlaced = 0;
     }
 
     private Vector3 GetNewBrickPosition()
