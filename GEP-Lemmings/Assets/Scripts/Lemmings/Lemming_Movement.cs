@@ -63,6 +63,7 @@ public class Lemming_Movement : MonoBehaviour
     public Action onFloating;
     public Action onDead;
     public Action<Vector3> onExplode;
+    public Action onBlockPlaced;
 
     private void Awake()
     {
@@ -255,6 +256,7 @@ public class Lemming_Movement : MonoBehaviour
         {
             yield return new WaitForSeconds(m_BuildDelay);
             step1 = Instantiate(m_BrickObject, GetNewBrickPosition(), Quaternion.identity, step2.transform);
+            onBlockPlaced?.Invoke();
             step1.GetComponent<StairStep>().SetDirection(m_direction);
             step2.GetComponent<StairStep>().SetNextStep(step1);
             m_numStepsPlaced++;
@@ -263,6 +265,7 @@ public class Lemming_Movement : MonoBehaviour
         } while (m_numStepsPlaced <= m_maxSteps);
 
         m_job = LEMMING_JOB.NONE;
+        m_numStepsPlaced = 0;
     }
 
     private Vector3 GetNewBrickPosition()
