@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Lemmings.Enums;
 
 public class Scene_Manager : MonoBehaviour
 {
@@ -16,7 +17,6 @@ public class Scene_Manager : MonoBehaviour
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnLevelLoaded;
-        StopListeningForEvents();
     }
 
     private void OnLevelLoaded(Scene scene, LoadSceneMode mode)
@@ -27,6 +27,9 @@ public class Scene_Manager : MonoBehaviour
         {
             uiObject.CallLoadScene += LoadScene;
             uiObject.CallQuitApp += QuitApplication;
+            uiObject.CallLoadNextScene += LoadNextLevel;
+            uiObject.CallReloadScene += RestartLevel;
+            //uiObject.CallLoadUI += LoadUI;
         }
     }
 
@@ -39,19 +42,27 @@ public class Scene_Manager : MonoBehaviour
         {
             uiObject.CallLoadScene -= LoadScene;
             uiObject.CallQuitApp -= QuitApplication;
+            uiObject.CallLoadNextScene -= LoadNextLevel;
+            uiObject.CallReloadScene -= RestartLevel;
+            //uiObject.CallLoadUI -= LoadUI;
         }
+
+        Array.Clear(m_ActiveUIObjects, 0, m_ActiveUIObjects.Length);
     }
 
     private void LoadScene(int BuildIndex)
     {
-        foreach (UI_Abstract uiObject in m_ActiveUIObjects)
-        {
-            uiObject.CallLoadScene -= LoadScene;
-            uiObject.CallQuitApp -= QuitApplication;
-        }
-
-        Array.Clear(m_ActiveUIObjects, 0, m_ActiveUIObjects.Length);
         SceneManager.LoadScene(BuildIndex);
+    }
+
+    private void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    private void LoadNextLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     private void QuitApplication()
