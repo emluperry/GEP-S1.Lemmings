@@ -36,14 +36,14 @@ public class Lemming_SFX : MonoBehaviour
         m_AudioSourceComponent.Play();
     }
 
-    private void PlayExplosion(Vector3 explosion)
+    private void PlayExplosion(Vector3 explosionlocation)
     {
         m_AudioSourceComponent.Stop();
         m_AudioSourceComponent.clip = m_ExplodeClip;
         m_AudioSourceComponent.Play();
     }
 
-    private void PlayDeath()
+    private void PlayDeath(int lemmingid)
     {
         m_AudioSourceComponent.Stop();
         m_AudioSourceComponent.clip = m_DeathClip;
