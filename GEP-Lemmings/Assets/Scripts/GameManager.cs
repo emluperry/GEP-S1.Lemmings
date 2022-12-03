@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UI_HUD m_HUDButtons;
 
     public Action<bool> onLevelEnd;
+    private Coroutine m_TimerCoroutine;
 
     private void Awake()
     {
@@ -88,11 +89,14 @@ public class GameManager : MonoBehaviour
         m_HUDButtons.UpdateActiveNumLemmings(m_CurrentLivingLemmingNum);
         m_HUDButtons.UpdateWinningNumLemmings(0);
 
-        StartCoroutine(Timer());
+        m_TimerCoroutine = StartCoroutine(Timer());
     }
 
     private void OnDestroy()
     {
+        StopCoroutine(m_TimerCoroutine);
+        m_TimerCoroutine = null;
+
         m_LevelEndPoint.onLemmingExit -= LemmingExitStage;
         m_HUDButtons.onRoleChosen -= UpdateJobCast;
 
@@ -160,6 +164,12 @@ public class GameManager : MonoBehaviour
                 }
                 m_HUDButtons.UpdateSeconds(seconds);
             }
+        }
+
+        if (minutes <= -1)
+        {
+            onLevelEnd?.Invoke(false);
+            PauseScene();
         }
     }
 
