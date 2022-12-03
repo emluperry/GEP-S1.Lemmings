@@ -24,6 +24,7 @@ namespace Lemmings.Enums
     public enum UI_STATE
     {
         NONE,
+        LEVEL_SELECT,
         HOWTOPLAY,
         SETTINGS,
         PAUSED,
