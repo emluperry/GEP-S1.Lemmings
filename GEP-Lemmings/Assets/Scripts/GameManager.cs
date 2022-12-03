@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     [SerializeField][Min(0)] private float m_MaximumTimeLimitInSeconds = 300f;
 
     private bool m_IsPaused = false;
+    private bool m_LevelEnded = false;
     public Action<bool> onPausePressed;
 
     [Header("Role counts")]
@@ -108,7 +109,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (!m_LevelEnded && Input.GetKeyDown(KeyCode.Escape))
         {
             PauseScene();
             onPausePressed?.Invoke(m_IsPaused);
@@ -167,6 +168,7 @@ public class GameManager : MonoBehaviour
         }
 
         onLevelEnd?.Invoke(false);
+        m_LevelEnded = true;
         PauseScene();
     }
 
@@ -180,6 +182,7 @@ public class GameManager : MonoBehaviour
         if (m_CurrentNumIn >= m_WinNum)
         {
             onLevelEnd?.Invoke(true);
+            m_LevelEnded = true;
             PauseScene();
         }
 
@@ -194,6 +197,7 @@ public class GameManager : MonoBehaviour
         if (m_CurrentLivingLemmingNum < m_WinNum - m_CurrentNumIn)
         {
             onLevelEnd?.Invoke(false);
+            m_LevelEnded = true;
             PauseScene();
         }
     }

@@ -534,7 +534,7 @@ RectTransform:
   - {fileID: 9071016092673049248}
   - {fileID: 9071016092689694914}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -616,7 +616,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_StartButton: {fileID: 3069260299272965308}
-  m_HowToPlayButton: {fileID: 0}
+  m_HowToPlayButton: {fileID: 9071016091567150134}
   m_QuitGameButton: {fileID: 9071016092689694918}
 --- !u!1 &9071016091971954965
 GameObject:
