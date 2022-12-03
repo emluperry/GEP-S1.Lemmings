@@ -115,7 +115,7 @@ public class Scene_Manager : MonoBehaviour
     private void LoadNextLevel()
     {
         int BuildIndex = SceneManager.GetActiveScene().buildIndex + 1;
-        if(BuildIndex > SceneManager.sceneCountInBuildSettings)
+        if(BuildIndex >= SceneManager.sceneCountInBuildSettings)
         {
             BuildIndex = 1;
         }
