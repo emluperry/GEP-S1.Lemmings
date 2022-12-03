@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField][Min(0)] private float m_MaximumTimeLimitInSeconds = 300f;
 
+    private bool m_IsPaused = false;
+    public Action<bool> onPausePressed;
+
     [Header("Role counts")]
     [SerializeField][Min(-1)] private int m_MaxNumFloat = 0;
     [SerializeField][Min(-1)] private int m_MaxNumBlock = 0;
@@ -42,7 +45,7 @@ public class GameManager : MonoBehaviour
     private LEMMING_JOB m_CurrentJob = LEMMING_JOB.NONE;
 
     [Header("UI References")]
-    [SerializeField] private HUD_ButtonManager m_HUDButtons;
+    [SerializeField] private UI_HUD m_HUDButtons;
 
     private void Awake()
     {
@@ -98,6 +101,19 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            m_IsPaused = !m_IsPaused;
+            onPausePressed?.Invoke(m_IsPaused);
+            foreach (GameObject Lemming in m_ArrLemmings)
+            {
+                Lemming.GetComponent<Lemming_Movement>().SetPaused(m_IsPaused);
+            }
+        }
+
+        if (m_IsPaused)
+            return;
+
         m_CurrentInterval += Time.deltaTime;
         if(m_CurrentInterval >= m_LemmingSpawnDelay && m_LastActiveLemming < m_MaxLemmings)
         {
@@ -117,7 +133,11 @@ public class GameManager : MonoBehaviour
         float secs = 0f;
         while (!(minutes == 0 && seconds == 0))
         {
-            yield return new WaitForFixedUpdate();
+            do
+            {
+                yield return new WaitForFixedUpdate();
+            } while (m_IsPaused);
+            
             secs += Time.fixedDeltaTime;
 
             if(secs > 1)
@@ -235,6 +255,10 @@ public class GameManager : MonoBehaviour
     private IEnumerator CountdownExplosion()
     {
         yield return new WaitForSeconds(m_ExplosionLength);
+        do
+        {
+            yield return new WaitForFixedUpdate();
+        } while (m_IsPaused);
         m_ExplosionObject.SetActive(false);
     }
 }

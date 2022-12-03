@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Lemmings.Enums;
+using TreeEditor;
 
 public class Scene_Manager : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class Scene_Manager : MonoBehaviour
     private UI_Abstract m_Pause;
     private UI_Abstract m_Win;
     private UI_Abstract m_Lose;
+
+    private GameManager m_CurrentGameManager;
 
     private Stack<UI_Abstract> m_UIStack;
 
@@ -41,6 +44,8 @@ public class Scene_Manager : MonoBehaviour
 
     private void OnLevelLoaded(Scene scene, LoadSceneMode mode)
     {
+        m_UIStack.Clear();
+
         SceneManager.SetActiveScene(scene);
         m_ActiveUIObjects = new List<UI_Abstract>();
         m_ActiveUIObjects.AddRange(FindObjectsOfType<UI_Abstract>());
@@ -51,6 +56,10 @@ public class Scene_Manager : MonoBehaviour
 
             m_UIStack.Push(uiObject);
         }
+
+        m_CurrentGameManager = FindObjectOfType<GameManager>();
+        if (m_CurrentGameManager)
+            m_CurrentGameManager.onPausePressed += LoadPauseMenu;
     }
 
     private void ListenForEventsIn(UI_Abstract uiObject)
@@ -81,6 +90,8 @@ public class Scene_Manager : MonoBehaviour
 
     private void LoadScene(int BuildIndex)
     {
+        StopListeningForEvents();
+
         SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
         SceneManager.LoadSceneAsync(BuildIndex, LoadSceneMode.Additive);
     }
@@ -88,20 +99,40 @@ public class Scene_Manager : MonoBehaviour
     private void RestartLevel()
     {
         int BuildIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
-        SceneManager.LoadSceneAsync(BuildIndex, LoadSceneMode.Additive);
+        LoadScene(BuildIndex);
     }
 
     private void LoadNextLevel()
     {
-        int BuildIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
-        SceneManager.LoadSceneAsync(BuildIndex + 1, LoadSceneMode.Additive);
+        int BuildIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        if(BuildIndex > SceneManager.sceneCountInBuildSettings)
+        {
+            BuildIndex = 1;
+        }
+        LoadScene(BuildIndex);
     }
 
     private void QuitApplication()
     {
         Application.Quit();
+    }
+
+    private void LoadPauseMenu(bool paused)
+    {
+        if(paused)
+        {
+            LoadUI(UI_STATE.PAUSED);
+        }
+        else
+        {
+            UI_Abstract uiObject;
+            while(m_UIStack.TryPeek(out uiObject) && !uiObject.GetComponent<UI_Pause>())
+            {
+                LoadUI(UI_STATE.BACK);
+            }
+            if (uiObject && uiObject.GetComponent<UI_Pause>())
+                LoadUI(UI_STATE.BACK);
+        }
     }
 
     private void LoadUI(UI_STATE UIScreen)
@@ -119,7 +150,7 @@ public class Scene_Manager : MonoBehaviour
             case UI_STATE.PAUSED:
                 if (!m_Pause)
                 {
-                    m_Pause = Instantiate(m_PausePrefab, Vector3.zero, Quaternion.identity, transform).GetComponent<UI_Abstract>();
+                    m_Pause = Instantiate(m_PausePrefab, Vector3.zero, Quaternion.identity).GetComponent<UI_Abstract>();
                     m_ActiveUIObjects.Add(m_Pause);
                     ListenForEventsIn(m_Pause);
                 }
@@ -131,7 +162,7 @@ public class Scene_Manager : MonoBehaviour
             case UI_STATE.SETTINGS:
                 if (!m_Settings)
                 {
-                    m_Settings = Instantiate(m_SettingsPrefab, Vector3.zero, Quaternion.identity, transform).GetComponent<UI_Abstract>();
+                    m_Settings = Instantiate(m_SettingsPrefab, Vector3.zero, Quaternion.identity).GetComponent<UI_Abstract>();
                     m_ActiveUIObjects.Add(m_Settings);
                     ListenForEventsIn(m_Settings);
                 }
@@ -143,7 +174,7 @@ public class Scene_Manager : MonoBehaviour
             case UI_STATE.HOWTOPLAY:
                 if (!m_HowToPlay)
                 {
-                    m_HowToPlay = Instantiate(m_HowToPlayPrefab, Vector3.zero, Quaternion.identity, transform).GetComponent<UI_Abstract>();
+                    m_HowToPlay = Instantiate(m_HowToPlayPrefab, Vector3.zero, Quaternion.identity).GetComponent<UI_Abstract>();
                     m_ActiveUIObjects.Add(m_HowToPlay);
                     ListenForEventsIn(m_HowToPlay);
                 }
@@ -155,7 +186,7 @@ public class Scene_Manager : MonoBehaviour
             case UI_STATE.WIN:
                 if (!m_Win)
                 {
-                    m_Win = Instantiate(m_WinPrefab, Vector3.zero, Quaternion.identity, transform).GetComponent<UI_Abstract>();
+                    m_Win = Instantiate(m_WinPrefab, Vector3.zero, Quaternion.identity).GetComponent<UI_Abstract>();
                     m_ActiveUIObjects.Add(m_Win);
                     ListenForEventsIn(m_Win);
                 }
@@ -167,7 +198,7 @@ public class Scene_Manager : MonoBehaviour
             case UI_STATE.LOSE:
                 if (!m_Lose)
                 {
-                    m_Lose = Instantiate(m_LosePrefab, Vector3.zero, Quaternion.identity, transform).GetComponent<UI_Abstract>();
+                    m_Lose = Instantiate(m_LosePrefab, Vector3.zero, Quaternion.identity).GetComponent<UI_Abstract>();
                     m_ActiveUIObjects.Add(m_Lose);
                     ListenForEventsIn(m_Lose);
                 }

@@ -11,7 +11,7 @@ public class UI_Pause : UI_Abstract
 
     private void Awake()
     {
-        m_ContinueButton.OnClicked += LoadNextLevel;
+        m_ContinueButton.OnClicked += BackButton;
         m_ControlsButton.OnClicked += LoadUI;
         m_SettingsButton.OnClicked += LoadUI;
         m_QuitToTitleButton.OnClicked += QuitToTitle;
@@ -19,7 +19,7 @@ public class UI_Pause : UI_Abstract
 
     private void OnDestroy()
     {
-        m_ContinueButton.OnClicked -= LoadNextLevel;
+        m_ContinueButton.OnClicked -= BackButton;
         m_ControlsButton.OnClicked -= LoadUI;
         m_SettingsButton.OnClicked -= LoadUI;
         m_QuitToTitleButton.OnClicked -= QuitToTitle;

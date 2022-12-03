@@ -5,7 +5,7 @@ using System;
 
 using Lemmings.Enums;
 
-public class HUD_ButtonManager : MonoBehaviour
+public class UI_HUD : UI_Abstract
 {
     [Header("Buttons")]
     [SerializeField] private Button_OnClick FloatJob;
@@ -89,7 +89,6 @@ public class HUD_ButtonManager : MonoBehaviour
         }
     }
 
-    //write function(s?) to update: timer values, current lemming values
     public void SetTotalLemmingsNeeded(int num)
     {
         NumTotalWinLemmings.UpdateValue("/" + num.ToString());
