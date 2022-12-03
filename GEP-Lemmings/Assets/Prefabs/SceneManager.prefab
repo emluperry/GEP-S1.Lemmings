@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8384451400225309572
 MonoBehaviour:
@@ -44,3 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc5ab6acbde5adf4f913148b8bc23057, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_HowToPlayPrefab: {fileID: 6733686535498222320, guid: 12224add3ebe15f4f8bfd50122739aaf,
+    type: 3}
+  m_SettingsPrefab: {fileID: 4170787976503050866, guid: 08b93179f583d4641a244612274eab90,
+    type: 3}
+  m_PausePrefab: {fileID: 4477761350273360838, guid: e5244dbc9b2cf644bae39605928ddf21,
+    type: 3}
+  m_WinPrefab: {fileID: 4871426808493676418, guid: b61d6dbaf4edc1d4887ce9cbb1ec6ddd,
+    type: 3}
+  m_LosePrefab: {fileID: 2233663350612237572, guid: 28bb14a0593f33143873617bba9dc323,
+    type: 3}

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
+using Lemmings.Enums;
+
 public class UI_StartMenu : UI_Abstract
 {
     [SerializeField] private Button_UIOnClickLevel m_StartButton;
@@ -25,6 +27,6 @@ public class UI_StartMenu : UI_Abstract
 
     private void HowTo()
     {
-        //load how-to UI
+        CallLoadUI?.Invoke(UI_STATE.HOWTOPLAY);
     }
 }

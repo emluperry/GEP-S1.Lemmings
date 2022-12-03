@@ -616,8 +616,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_StartButton: {fileID: 9071016090986890834}
-  m_HowToPlayButton: {fileID: 0}
-  m_QuitGameButton: {fileID: 0}
+  m_HowToPlayButton: {fileID: 9071016092673049252}
+  m_QuitGameButton: {fileID: 9071016092689694918}
 --- !u!1 &9071016091971954965
 GameObject:
   m_ObjectHideFlags: 0

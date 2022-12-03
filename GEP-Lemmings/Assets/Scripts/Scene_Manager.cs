@@ -21,11 +21,12 @@ public class Scene_Manager : MonoBehaviour
 
     private Stack<UI_Abstract> m_UIStack;
 
-    private UI_Abstract[] m_ActiveUIObjects;
+    private List<UI_Abstract> m_ActiveUIObjects;
 
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnLevelLoaded;
+        m_UIStack = new Stack<UI_Abstract>(); 
     }
 
     private void OnDisable()
@@ -35,21 +36,29 @@ public class Scene_Manager : MonoBehaviour
 
     private void OnLevelLoaded(Scene scene, LoadSceneMode mode)
     {
-        m_ActiveUIObjects = FindObjectsOfType<UI_Abstract>();
+        m_ActiveUIObjects = new List<UI_Abstract>();
+        m_ActiveUIObjects.AddRange(FindObjectsOfType<UI_Abstract>());
 
-        foreach(UI_Abstract uiObject in m_ActiveUIObjects)
+        foreach (UI_Abstract uiObject in m_ActiveUIObjects)
         {
-            uiObject.CallLoadScene += LoadScene;
-            uiObject.CallQuitApp += QuitApplication;
-            uiObject.CallLoadNextScene += LoadNextLevel;
-            uiObject.CallReloadScene += RestartLevel;
-            uiObject.CallLoadUI += LoadUI;
+            ListenForEventsIn(uiObject);
+
+            m_UIStack.Push(uiObject);
         }
+    }
+
+    private void ListenForEventsIn(UI_Abstract uiObject)
+    {
+        uiObject.CallLoadScene += LoadScene;
+        uiObject.CallQuitApp += QuitApplication;
+        uiObject.CallLoadNextScene += LoadNextLevel;
+        uiObject.CallReloadScene += RestartLevel;
+        uiObject.CallLoadUI += LoadUI;
     }
 
     private void StopListeningForEvents()
     {
-        if (m_ActiveUIObjects.Length <= 0)
+        if (m_ActiveUIObjects.Count <= 0)
             return;
 
         foreach (UI_Abstract uiObject in m_ActiveUIObjects)
@@ -61,7 +70,7 @@ public class Scene_Manager : MonoBehaviour
             uiObject.CallLoadUI -= LoadUI;
         }
 
-        Array.Clear(m_ActiveUIObjects, 0, m_ActiveUIObjects.Length);
+        m_ActiveUIObjects.Clear();
     }
 
     private void LoadScene(int BuildIndex)
@@ -87,8 +96,7 @@ public class Scene_Manager : MonoBehaviour
     private void LoadUI(UI_STATE UIScreen)
     {
         UI_Abstract LastUI;
-        m_UIStack.TryPeek(out LastUI);
-        if (LastUI)
+        if(m_UIStack.TryPeek(out LastUI))
             LastUI.gameObject.SetActive(false);
 
         switch(UIScreen)
@@ -99,7 +107,11 @@ public class Scene_Manager : MonoBehaviour
 
             case UI_STATE.PAUSED:
                 if (!m_Pause)
+                {
                     m_Pause = Instantiate(m_PausePrefab, Vector3.zero, Quaternion.identity, transform).GetComponent<UI_Abstract>();
+                    m_ActiveUIObjects.Add(m_Pause);
+                    ListenForEventsIn(m_Pause);
+                }
                 else
                     m_Pause.gameObject.SetActive(true);
                 m_UIStack.Push(m_Pause);
@@ -107,7 +119,11 @@ public class Scene_Manager : MonoBehaviour
 
             case UI_STATE.SETTINGS:
                 if (!m_Settings)
+                {
                     m_Settings = Instantiate(m_SettingsPrefab, Vector3.zero, Quaternion.identity, transform).GetComponent<UI_Abstract>();
+                    m_ActiveUIObjects.Add(m_Settings);
+                    ListenForEventsIn(m_Settings);
+                }
                 else
                     m_Settings.gameObject.SetActive(true);
                 m_UIStack.Push(m_Settings);
@@ -115,7 +131,11 @@ public class Scene_Manager : MonoBehaviour
 
             case UI_STATE.HOWTOPLAY:
                 if (!m_HowToPlay)
+                {
                     m_HowToPlay = Instantiate(m_HowToPlayPrefab, Vector3.zero, Quaternion.identity, transform).GetComponent<UI_Abstract>();
+                    m_ActiveUIObjects.Add(m_HowToPlay);
+                    ListenForEventsIn(m_HowToPlay);
+                }
                 else
                     m_HowToPlay.gameObject.SetActive(true);
                 m_UIStack.Push(m_HowToPlay);
@@ -123,7 +143,11 @@ public class Scene_Manager : MonoBehaviour
 
             case UI_STATE.WIN:
                 if (!m_Win)
+                {
                     m_Win = Instantiate(m_WinPrefab, Vector3.zero, Quaternion.identity, transform).GetComponent<UI_Abstract>();
+                    m_ActiveUIObjects.Add(m_Win);
+                    ListenForEventsIn(m_Win);
+                }
                 else
                     m_Win.gameObject.SetActive(true);
                 m_UIStack.Push(m_Win);
@@ -131,7 +155,11 @@ public class Scene_Manager : MonoBehaviour
 
             case UI_STATE.LOSE:
                 if (!m_Lose)
+                {
                     m_Lose = Instantiate(m_LosePrefab, Vector3.zero, Quaternion.identity, transform).GetComponent<UI_Abstract>();
+                    m_ActiveUIObjects.Add(m_Lose);
+                    ListenForEventsIn(m_Lose);
+                }
                 else
                     m_Lose.gameObject.SetActive(true);
                 m_UIStack.Push(m_Lose);
@@ -139,8 +167,7 @@ public class Scene_Manager : MonoBehaviour
 
             case UI_STATE.BACK:
                 m_UIStack.Pop();
-                m_UIStack.TryPeek(out LastUI);
-                if (LastUI)
+                if (m_UIStack.TryPeek(out LastUI))
                     LastUI.gameObject.SetActive(true);
                 break;
         }
