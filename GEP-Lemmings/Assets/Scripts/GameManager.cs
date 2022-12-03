@@ -47,6 +47,8 @@ public class GameManager : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private UI_HUD m_HUDButtons;
 
+    public Action<bool> onLevelEnd;
+
     private void Awake()
     {
         //events
@@ -84,6 +86,7 @@ public class GameManager : MonoBehaviour
         //other hud stats
         m_HUDButtons.SetTotalLemmingsNeeded(m_WinNum);
         m_HUDButtons.UpdateActiveNumLemmings(m_CurrentLivingLemmingNum);
+        m_HUDButtons.UpdateWinningNumLemmings(0);
 
         StartCoroutine(Timer());
     }
@@ -103,12 +106,8 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            m_IsPaused = !m_IsPaused;
+            PauseScene();
             onPausePressed?.Invoke(m_IsPaused);
-            foreach (GameObject Lemming in m_ArrLemmings)
-            {
-                Lemming.GetComponent<Lemming_Movement>().SetPaused(m_IsPaused);
-            }
         }
 
         if (m_IsPaused)
@@ -120,6 +119,15 @@ public class GameManager : MonoBehaviour
             m_ArrLemmings[m_LastActiveLemming].SetActive(true);
             m_LastActiveLemming++;
             m_CurrentInterval = 0;
+        }
+    }
+
+    private void PauseScene()
+    {
+        m_IsPaused = !m_IsPaused;
+        foreach (GameObject Lemming in m_ArrLemmings)
+        {
+            Lemming.GetComponent<Lemming_Movement>().SetPaused(m_IsPaused);
         }
     }
 
@@ -158,12 +166,14 @@ public class GameManager : MonoBehaviour
     private void LemmingExitStage(int LemmingIndex)
     {
         m_CurrentNumIn++;
+        m_CurrentLivingLemmingNum--;
         m_HUDButtons.UpdateWinningNumLemmings(m_CurrentNumIn);
-        m_HUDButtons.UpdateActiveNumLemmings(m_CurrentLivingLemmingNum - m_CurrentNumIn);
+        m_HUDButtons.UpdateActiveNumLemmings(m_CurrentLivingLemmingNum);
 
         if (m_CurrentNumIn >= m_WinNum)
         {
-            Debug.Log("Win game!");
+            onLevelEnd?.Invoke(true);
+            PauseScene();
         }
 
         DeactivateLemming(LemmingIndex);
@@ -174,9 +184,10 @@ public class GameManager : MonoBehaviour
         m_CurrentLivingLemmingNum--;
         m_HUDButtons.UpdateActiveNumLemmings(m_CurrentLivingLemmingNum);
 
-        if (m_CurrentLivingLemmingNum < m_WinNum)
+        if (m_CurrentLivingLemmingNum < m_WinNum - m_CurrentNumIn)
         {
-            Debug.Log("Too many dead. Lose game.");
+            onLevelEnd?.Invoke(false);
+            PauseScene();
         }
     }
 

@@ -57,9 +57,13 @@ public class Scene_Manager : MonoBehaviour
             m_UIStack.Push(uiObject);
         }
 
+
         m_CurrentGameManager = FindObjectOfType<GameManager>();
         if (m_CurrentGameManager)
+        {
             m_CurrentGameManager.onPausePressed += LoadPauseMenu;
+            m_CurrentGameManager.onLevelEnd += LoadWinLoseScreen;
+        }
     }
 
     private void ListenForEventsIn(UI_Abstract uiObject)
@@ -73,6 +77,12 @@ public class Scene_Manager : MonoBehaviour
 
     private void StopListeningForEvents()
     {
+        if (m_CurrentGameManager)
+        {
+            m_CurrentGameManager.onPausePressed -= LoadPauseMenu;
+            m_CurrentGameManager.onLevelEnd -= LoadWinLoseScreen;
+        }
+
         if (m_ActiveUIObjects.Count <= 0)
             return;
 
@@ -135,10 +145,17 @@ public class Scene_Manager : MonoBehaviour
         }
     }
 
+    private void LoadWinLoseScreen(bool playerWon)
+    {
+        if (playerWon)
+            LoadUI(UI_STATE.WIN);
+        else
+            LoadUI(UI_STATE.LOSE);
+    }
+
     private void LoadUI(UI_STATE UIScreen)
     {
-        UI_Abstract LastUI;
-        if(m_UIStack.TryPeek(out LastUI))
+        if(m_UIStack.TryPeek(out UI_Abstract LastUI))
             LastUI.gameObject.SetActive(false);
 
         switch(UIScreen)
