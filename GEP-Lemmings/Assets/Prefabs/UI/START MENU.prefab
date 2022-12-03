@@ -416,7 +416,7 @@ GameObject:
   - component: {fileID: 9071016090986890862}
   - component: {fileID: 9071016090986890835}
   - component: {fileID: 9071016090986890860}
-  - component: {fileID: 9071016090986890834}
+  - component: {fileID: 5944627452239507224}
   m_Layer: 5
   m_Name: START BUTTON
   m_TagString: Untagged
@@ -483,7 +483,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &9071016090986890834
+--- !u!114 &5944627452239507224
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -492,11 +492,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 9071016090986890863}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a0a0bc6447af2246b43a9c3a8b41df6, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ad742b3136dbd842aaa4143daad7afa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HoverColour: {r: 0.012643122, g: 0, b: 0.46226418, a: 0.9372549}
-  m_SceneIndexToLoad: 1
+  m_HoverColour: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &9071016091691423121
 GameObject:
   m_ObjectHideFlags: 0
@@ -615,7 +614,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f522667ab3e3edb45a7efcee5aadadb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_StartButton: {fileID: 9071016090986890834}
+  m_StartButton: {fileID: 5944627452239507224}
   m_HowToPlayButton: {fileID: 9071016092673049252}
   m_QuitGameButton: {fileID: 9071016092689694918}
 --- !u!1 &9071016091971954965

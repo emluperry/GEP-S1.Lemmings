@@ -40,7 +40,7 @@ public class UI_Abstract : MonoBehaviour
 
     protected void QuitToTitle()
     {
-        CallLoadScene?.Invoke(0);
+        CallLoadScene?.Invoke(1);
     }
 
     protected void Quit()

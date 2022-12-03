@@ -23,6 +23,11 @@ public class Scene_Manager : MonoBehaviour
 
     private List<UI_Abstract> m_ActiveUIObjects;
 
+    private void Awake()
+    {
+        SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
+    }
+
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnLevelLoaded;
@@ -36,6 +41,7 @@ public class Scene_Manager : MonoBehaviour
 
     private void OnLevelLoaded(Scene scene, LoadSceneMode mode)
     {
+        SceneManager.SetActiveScene(scene);
         m_ActiveUIObjects = new List<UI_Abstract>();
         m_ActiveUIObjects.AddRange(FindObjectsOfType<UI_Abstract>());
 
@@ -75,17 +81,22 @@ public class Scene_Manager : MonoBehaviour
 
     private void LoadScene(int BuildIndex)
     {
-        SceneManager.LoadScene(BuildIndex);
+        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+        SceneManager.LoadSceneAsync(BuildIndex, LoadSceneMode.Additive);
     }
 
     private void RestartLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        int BuildIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+        SceneManager.LoadSceneAsync(BuildIndex, LoadSceneMode.Additive);
     }
 
     private void LoadNextLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        int BuildIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+        SceneManager.LoadSceneAsync(BuildIndex + 1, LoadSceneMode.Additive);
     }
 
     private void QuitApplication()
