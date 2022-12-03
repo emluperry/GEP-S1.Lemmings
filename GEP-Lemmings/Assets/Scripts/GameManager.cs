@@ -166,11 +166,8 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (minutes <= -1)
-        {
-            onLevelEnd?.Invoke(false);
-            PauseScene();
-        }
+        onLevelEnd?.Invoke(false);
+        PauseScene();
     }
 
     private void LemmingExitStage(int LemmingIndex)

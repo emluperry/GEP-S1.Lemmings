@@ -1016,6 +1016,11 @@ PrefabInstance:
       propertyPath: m_LemmingSpawnDelay
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6355129602616715050, guid: 8ab6c60cae3142c408b9f2945c9ccad7,
+        type: 3}
+      propertyPath: m_MaximumTimeLimitInSeconds
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 7540374923277016005, guid: 8ab6c60cae3142c408b9f2945c9ccad7,
         type: 3}
       propertyPath: m_RootOrder
