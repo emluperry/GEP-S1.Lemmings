@@ -44,6 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc5ab6acbde5adf4f913148b8bc23057, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_LevelSelectPrefab: {fileID: 960495619987956668, guid: d9a1c7026e52ed94a9ea2503685ae368,
+    type: 3}
   m_HowToPlayPrefab: {fileID: 6733686535498222320, guid: 12224add3ebe15f4f8bfd50122739aaf,
     type: 3}
   m_SettingsPrefab: {fileID: 4170787976503050866, guid: 08b93179f583d4641a244612274eab90,

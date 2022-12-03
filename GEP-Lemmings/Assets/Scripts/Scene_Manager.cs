@@ -8,12 +8,14 @@ using TreeEditor;
 
 public class Scene_Manager : MonoBehaviour
 {
+    [SerializeField] private GameObject m_LevelSelectPrefab;
     [SerializeField] private GameObject m_HowToPlayPrefab;
     [SerializeField] private GameObject m_SettingsPrefab;
     [SerializeField] private GameObject m_PausePrefab;
     [SerializeField] private GameObject m_WinPrefab;
     [SerializeField] private GameObject m_LosePrefab;
 
+    private UI_Abstract m_LevelSelect;
     private UI_Abstract m_HowToPlay;
     private UI_Abstract m_Settings;
     private UI_Abstract m_Pause;
@@ -223,6 +225,18 @@ public class Scene_Manager : MonoBehaviour
                 else
                     m_Lose.gameObject.SetActive(true);
                 m_UIStack.Push(m_Lose);
+                break;
+
+            case UI_STATE.LEVEL_SELECT:
+                if (!m_LevelSelect)
+                {
+                    m_LevelSelect = Instantiate(m_LevelSelectPrefab, Vector3.zero, Quaternion.identity).GetComponent<UI_Abstract>();
+                    m_ActiveUIObjects.Add(m_LevelSelect);
+                    ListenForEventsIn(m_LevelSelect);
+                }
+                else
+                    m_LevelSelect.gameObject.SetActive(true);
+                m_UIStack.Push(m_LevelSelect);
                 break;
 
             case UI_STATE.BACK:
