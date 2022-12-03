@@ -41,7 +41,7 @@ public class Lemming_Animation : MonoBehaviour
         m_Animator.SetBool("isFloating", true);
     }
 
-    private void TriggerDie()
+    private void TriggerDie(int var)
     {
         m_Animator.SetTrigger("die");
     }

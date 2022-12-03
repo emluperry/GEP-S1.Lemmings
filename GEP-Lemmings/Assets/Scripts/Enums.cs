@@ -21,5 +21,15 @@ namespace Lemmings.Enums
         EXPLODING
     }
 
+    public enum UI_STATE
+    {
+        NONE,
+        HOWTOPLAY,
+        SETTINGS,
+        PAUSED,
+        WIN,
+        LOSE,
+        BACK
+    }
 }
 
