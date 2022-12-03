@@ -28,7 +28,8 @@ public class Scene_Manager : MonoBehaviour
 
     private void Awake()
     {
-        SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
+        if(SceneManager.GetActiveScene().buildIndex == 0)
+            SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
     }
 
     private void OnEnable()
