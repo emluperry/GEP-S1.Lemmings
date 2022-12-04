@@ -29,6 +29,8 @@ public class Scene_Manager : MonoBehaviour
     private GameManager m_CurrentGameManager;
     [SerializeField] private float m_FadeInOutTime = 1f;
 
+    [SerializeField] private Camera_Controller m_Camera;
+
     private Stack<UI_Abstract> m_UIStack;
 
     private List<UI_Abstract> m_ActiveUIObjects;
@@ -36,7 +38,10 @@ public class Scene_Manager : MonoBehaviour
     private void Awake()
     {
         if(SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            m_Camera.SetPaused(true);
             SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
+        }
 
         if (m_SettingsManager)
             m_SettingsManager.RestoreSavedSettings();
@@ -74,6 +79,8 @@ public class Scene_Manager : MonoBehaviour
         {
             m_CurrentGameManager.onPausePressed += LoadPauseMenu;
             m_CurrentGameManager.onLevelEnd += LoadWinLoseScreen;
+
+            m_Camera.SetPaused(false);
         }
 
         StartCoroutine(FadeOut());
@@ -94,7 +101,11 @@ public class Scene_Manager : MonoBehaviour
         {
             m_CurrentGameManager.onPausePressed -= LoadPauseMenu;
             m_CurrentGameManager.onLevelEnd -= LoadWinLoseScreen;
+
+            m_Camera.SetPaused(true);
         }
+
+        m_Camera.ResetPosition();
 
         if(m_SettingsManager && m_Settings)
         {
@@ -122,6 +133,7 @@ public class Scene_Manager : MonoBehaviour
     private void LoadScene(int BuildIndex)
     {
         StartCoroutine(FadeIn());
+
         StopListeningForEvents();
 
         SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
@@ -202,6 +214,7 @@ public class Scene_Manager : MonoBehaviour
             if (uiObject && uiObject.GetComponent<UI_Pause>())
                 LoadUI(UI_STATE.BACK);
         }
+        m_Camera.SetPaused(paused);
     }
 
     private void LoadWinLoseScreen(bool playerWon)
