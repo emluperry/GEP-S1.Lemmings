@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class StairStep : MonoBehaviour
 {
-    private Vector3 direction = Vector3.zero;
-    private GameObject nextStep;
+    [SerializeField] private Vector3 direction = Vector3.zero;
 
     public void SetDirection(Vector3 dir)
     {
@@ -16,10 +15,5 @@ public class StairStep : MonoBehaviour
     public Vector3 GetDirection()
     {
         return direction;
-    }
-
-    public void SetNextStep(GameObject next)
-    {
-        nextStep = next;
     }
 }
