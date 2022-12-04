@@ -302,7 +302,7 @@ public class Lemming_Movement : MonoBehaviour
             m_NumStepsPlaced++;
             ClimbStep();
             step2 = step1;
-        } while (m_NumStepsPlaced <= m_MaxSteps);
+        } while (m_NumStepsPlaced < m_MaxSteps);
 
         m_job = LEMMING_JOB.NONE;
         m_NumStepsPlaced = 0;

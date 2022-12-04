@@ -61,8 +61,8 @@ public class FlexibleGridLayout : LayoutGroup
 
             RectTransform item = rectChildren[ItChild];
 
-            float xPos = (m_CellSize.x * colCount) + (m_Spacing.x * colCount) + padding.left;
-            float yPos = (m_CellSize.y * rowCount) + (m_Spacing.y * rowCount) + padding.top;
+            float xPos = (m_CellSize.x * colCount) + (m_Spacing.x * colCount) + padding.left + (m_Spacing.x * 0.5f);
+            float yPos = (m_CellSize.y * rowCount) + (m_Spacing.y * rowCount) + padding.top + (m_Spacing.y * 0.5f);
 
             SetChildAlongAxis(item, 0, xPos, m_CellSize.x);
             SetChildAlongAxis(item, 1, yPos, m_CellSize.y);

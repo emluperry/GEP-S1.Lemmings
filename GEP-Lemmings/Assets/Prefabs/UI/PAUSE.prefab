@@ -702,7 +702,7 @@ RectTransform:
   - {fileID: 6496739184691353006}
   - {fileID: 4477761349174045333}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -784,8 +784,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ContinueButton: {fileID: 4477761349376061422}
-  m_ControlsButton: {fileID: 6496739186023413659}
-  m_SettingsButton: {fileID: 6496739184691353002}
+  m_ControlsButton: {fileID: 6496739184691353002}
+  m_SettingsButton: {fileID: 6496739186023413659}
   m_QuitToTitleButton: {fileID: 4477761349174045332}
 --- !u!1 &6496739184691353009
 GameObject:
@@ -878,7 +878,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_HoverColour: {r: 0.012643122, g: 0, b: 0.46226418, a: 0.9372549}
-  m_UIToLoad: 1
+  m_UIToLoad: 2
 --- !u!1 &6496739185285494663
 GameObject:
   m_ObjectHideFlags: 0
@@ -1107,7 +1107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_HoverColour: {r: 0.012643122, g: 0, b: 0.46226418, a: 0.9372549}
-  m_UIToLoad: 2
+  m_UIToLoad: 3
 --- !u!1 &6496739186139007516
 GameObject:
   m_ObjectHideFlags: 0

@@ -24,6 +24,7 @@ namespace Lemmings.Enums
     public enum UI_STATE
     {
         NONE,
+        LEVEL_SELECT,
         HOWTOPLAY,
         SETTINGS,
         PAUSED,
@@ -31,5 +32,13 @@ namespace Lemmings.Enums
         LOSE,
         BACK
     }
+
+    public enum VOLUME_SLIDER
+    {
+        MASTERVOLUME,
+        MUSICVOLUME,
+        SFXVOLUME
+    }
+
 }
 
