@@ -18,7 +18,7 @@ public class UI_Abstract : MonoBehaviour
         CallLoadUI?.Invoke(state);
     }
 
-    protected void BackButton()
+    protected virtual void BackButton()
     {
         CallLoadUI?.Invoke(UI_STATE.BACK);
     }

@@ -32,5 +32,13 @@ namespace Lemmings.Enums
         LOSE,
         BACK
     }
+
+    public enum VOLUME_SLIDER
+    {
+        MASTERVOLUME,
+        MUSICVOLUME,
+        SFXVOLUME
+    }
+
 }
 

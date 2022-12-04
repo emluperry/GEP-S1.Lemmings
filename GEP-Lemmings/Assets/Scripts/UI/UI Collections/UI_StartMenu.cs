@@ -9,6 +9,7 @@ public class UI_StartMenu : UI_Abstract
 {
     [SerializeField] private Button_UIOnClickUI m_StartButton;
     [SerializeField] private Button_UIOnClickUI m_HowToPlayButton;
+    [SerializeField] private Button_UIOnClickUI m_SettingsButton;
     [SerializeField] private Button_UIOnClick m_QuitGameButton;
 
     private void Awake()
@@ -16,6 +17,7 @@ public class UI_StartMenu : UI_Abstract
         m_StartButton.OnClicked += LoadUI;
         m_QuitGameButton.OnClicked += Quit;
         m_HowToPlayButton.OnClicked += LoadUI;
+        m_SettingsButton.OnClicked += LoadUI;
     }
 
     private void OnDestroy()
@@ -23,5 +25,6 @@ public class UI_StartMenu : UI_Abstract
         m_StartButton.OnClicked -= LoadUI;
         m_QuitGameButton.OnClicked -= Quit;
         m_HowToPlayButton.OnClicked -= LoadUI;
+        m_SettingsButton.OnClicked -= LoadUI;
     }
 }

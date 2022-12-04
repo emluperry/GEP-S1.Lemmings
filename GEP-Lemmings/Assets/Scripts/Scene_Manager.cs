@@ -8,6 +8,7 @@ using TreeEditor;
 
 public class Scene_Manager : MonoBehaviour
 {
+    [Header("Prefab Objects")]
     [SerializeField] private GameObject m_LevelSelectPrefab;
     [SerializeField] private GameObject m_HowToPlayPrefab;
     [SerializeField] private GameObject m_SettingsPrefab;
@@ -22,6 +23,8 @@ public class Scene_Manager : MonoBehaviour
     private UI_Abstract m_Win;
     private UI_Abstract m_Lose;
 
+    [Header("Other Managers")]
+    [SerializeField] private SettingsManager m_SettingsManager;
     private GameManager m_CurrentGameManager;
 
     private Stack<UI_Abstract> m_UIStack;
@@ -32,6 +35,9 @@ public class Scene_Manager : MonoBehaviour
     {
         if(SceneManager.GetActiveScene().buildIndex == 0)
             SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
+
+        if (m_SettingsManager)
+            m_SettingsManager.RestoreSavedSettings();
     }
 
     private void OnEnable()
@@ -86,6 +92,11 @@ public class Scene_Manager : MonoBehaviour
             m_CurrentGameManager.onLevelEnd -= LoadWinLoseScreen;
         }
 
+        if(m_SettingsManager && m_Settings)
+        {
+            m_SettingsManager.StopListeningForEvents();
+        }
+
         if (m_ActiveUIObjects.Count <= 0)
             return;
 
@@ -97,6 +108,9 @@ public class Scene_Manager : MonoBehaviour
             uiObject.CallReloadScene -= RestartLevel;
             uiObject.CallLoadUI -= LoadUI;
         }
+
+        if(m_Pause)
+            m_Pause.GetComponent<UI_Pause>().onUnpause -= Unpause;
 
         m_ActiveUIObjects.Clear();
     }
@@ -130,6 +144,12 @@ public class Scene_Manager : MonoBehaviour
         Application.Quit();
     }
 
+    private void Unpause()
+    {
+        m_CurrentGameManager.PauseScene();
+        LoadPauseMenu(false);
+    }    
+
     private void LoadPauseMenu(bool paused)
     {
         if(paused)
@@ -141,6 +161,9 @@ public class Scene_Manager : MonoBehaviour
             UI_Abstract uiObject;
             while(m_UIStack.TryPeek(out uiObject) && !uiObject.GetComponent<UI_Pause>())
             {
+                if(uiObject.GetComponent<UI_Settings>())
+                    m_SettingsManager.RestoreSavedSettings();
+
                 LoadUI(UI_STATE.BACK);
             }
             if (uiObject && uiObject.GetComponent<UI_Pause>())
@@ -173,6 +196,7 @@ public class Scene_Manager : MonoBehaviour
                     m_Pause = Instantiate(m_PausePrefab, Vector3.zero, Quaternion.identity).GetComponent<UI_Abstract>();
                     m_ActiveUIObjects.Add(m_Pause);
                     ListenForEventsIn(m_Pause);
+                    m_Pause.GetComponent<UI_Pause>().onUnpause += Unpause;
                 }
                 else
                     m_Pause.gameObject.SetActive(true);
@@ -185,9 +209,11 @@ public class Scene_Manager : MonoBehaviour
                     m_Settings = Instantiate(m_SettingsPrefab, Vector3.zero, Quaternion.identity).GetComponent<UI_Abstract>();
                     m_ActiveUIObjects.Add(m_Settings);
                     ListenForEventsIn(m_Settings);
+                    m_SettingsManager.ListenForEvents(m_Settings.GetComponent<UI_Settings>());
                 }
                 else
                     m_Settings.gameObject.SetActive(true);
+                m_SettingsManager.RestoreSettingMenuValues();
                 m_UIStack.Push(m_Settings);
                 break;
 

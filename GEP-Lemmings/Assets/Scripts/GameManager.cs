@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void PauseScene()
+    public void PauseScene()
     {
         m_IsPaused = !m_IsPaused;
         foreach (GameObject Lemming in m_ArrLemmings)
