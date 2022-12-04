@@ -16,6 +16,7 @@ public class Scene_Manager : MonoBehaviour
     [SerializeField] private GameObject m_WinPrefab;
     [SerializeField] private GameObject m_LosePrefab;
 
+    [SerializeField] private CanvasGroup m_LoadScreenObject;
     private UI_Abstract m_LevelSelect;
     private UI_Abstract m_HowToPlay;
     private UI_Abstract m_Settings;
@@ -26,6 +27,7 @@ public class Scene_Manager : MonoBehaviour
     [Header("Other Managers")]
     [SerializeField] private SettingsManager m_SettingsManager;
     private GameManager m_CurrentGameManager;
+    [SerializeField] private float m_FadeInOutTime = 1f;
 
     private Stack<UI_Abstract> m_UIStack;
 
@@ -73,6 +75,8 @@ public class Scene_Manager : MonoBehaviour
             m_CurrentGameManager.onPausePressed += LoadPauseMenu;
             m_CurrentGameManager.onLevelEnd += LoadWinLoseScreen;
         }
+
+        StartCoroutine(FadeOut());
     }
 
     private void ListenForEventsIn(UI_Abstract uiObject)
@@ -117,10 +121,39 @@ public class Scene_Manager : MonoBehaviour
 
     private void LoadScene(int BuildIndex)
     {
+        StartCoroutine(FadeIn());
         StopListeningForEvents();
 
         SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
         SceneManager.LoadSceneAsync(BuildIndex, LoadSceneMode.Additive);
+    }
+
+    private IEnumerator FadeIn()
+    {
+        float Increment = 1 / m_FadeInOutTime;
+        m_LoadScreenObject.gameObject.SetActive(true);
+        m_LoadScreenObject.blocksRaycasts = true;
+        m_LoadScreenObject.alpha = 0;
+        while (m_LoadScreenObject.alpha < 1)
+        {
+            m_LoadScreenObject.alpha += Increment;
+            yield return new WaitForFixedUpdate();
+        }
+        m_LoadScreenObject.alpha = 1;
+    }
+
+    private IEnumerator FadeOut()
+    {
+        float Increment = 1 / m_FadeInOutTime;
+        m_LoadScreenObject.alpha = 1;
+        while (m_LoadScreenObject.alpha < 1)
+        {
+            m_LoadScreenObject.alpha -= Increment;
+            yield return new WaitForFixedUpdate();
+        }
+        m_LoadScreenObject.alpha = 0;
+        m_LoadScreenObject.blocksRaycasts = false;
+        m_LoadScreenObject.gameObject.SetActive(false);
     }
 
     private void RestartLevel()
