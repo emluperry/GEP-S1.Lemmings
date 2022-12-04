@@ -107,7 +107,7 @@ public class Lemming_Movement : MonoBehaviour
         {
             KillLemming();
         }
-        else
+        else if(Physics.Raycast(transform.position - new Vector3(0, 0.75f, 0), new Vector3(m_Direction.x, 0, 0).normalized, 2))
         {
             if (m_State != LEMMING_STATE.FALLING)
                 m_State = LEMMING_STATE.TURNING;
@@ -281,28 +281,22 @@ public class Lemming_Movement : MonoBehaviour
     private IEnumerator BuildStairs()
     {
         GameObject step1;
-        GameObject step2;
-
-        step1 = Instantiate(m_BrickObject, GetNewBrickPosition(), Quaternion.identity);
-        step1.GetComponent<StairStep>().SetDirection(m_Direction);
-        m_NumStepsPlaced++;
-        ClimbStep();
-        step2 = step1;
+        GameObject step2 = null;
         
         do
         {
+            step1 = Instantiate(m_BrickObject, GetNewBrickPosition(), Quaternion.identity, step2 ? step2.transform : null);
+            onBlockPlaced?.Invoke();
+            step1.GetComponent<StairStep>().SetDirection(m_Direction);
+
+            m_NumStepsPlaced++;
+            ClimbStep();
+            step2 = step1;
             do
             {
                 yield return new WaitForSeconds(m_BuildDelay);
             } while (m_IsPaused);
-            step1 = Instantiate(m_BrickObject, GetNewBrickPosition(), Quaternion.identity, step2.transform);
-            onBlockPlaced?.Invoke();
-            step1.GetComponent<StairStep>().SetDirection(m_Direction);
-            step2.GetComponent<StairStep>().SetNextStep(step1);
-            m_NumStepsPlaced++;
-            ClimbStep();
-            step2 = step1;
-        } while (m_NumStepsPlaced < m_MaxSteps);
+        } while (m_NumStepsPlaced <= m_MaxSteps);
 
         m_job = LEMMING_JOB.NONE;
         m_NumStepsPlaced = 0;
