@@ -6,12 +6,12 @@ public class UI_SimpleScreen : UI_Abstract
 {
     [SerializeField] private Button_UIOnClick m_BackButton;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         m_BackButton.OnClicked += BackButton;
     }
 
-    private void OnDestroy()
+    protected virtual void OnDestroy()
     {
         m_BackButton.OnClicked -= BackButton;
     }

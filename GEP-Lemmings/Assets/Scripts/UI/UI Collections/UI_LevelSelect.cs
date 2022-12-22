@@ -7,7 +7,7 @@ public class UI_LevelSelect : UI_SimpleScreen
     [SerializeField] private FlexibleGridLayout m_LayoutGroup;
     private Button_UIOnClickLevel[] m_LevelButtons;
 
-    private void Awake()
+    protected override void Awake()
     {
         m_LevelButtons = GetComponentsInChildren<Button_UIOnClickLevel>();
         foreach(Button_UIOnClickLevel button in m_LevelButtons)
@@ -16,7 +16,7 @@ public class UI_LevelSelect : UI_SimpleScreen
         }
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
         foreach (Button_UIOnClickLevel button in m_LevelButtons)
         {
